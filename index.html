@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - Create Professional Resumes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%);
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .logo span {
+      color: #fbbf24;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #fbbf24;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-outline {
+      padding: 10px 25px;
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: white;
+      color: #1e3a8a;
+    }
+
+    .btn-primary {
+      padding: 10px 25px;
+      border: none;
+      background: #fbbf24;
+      color: #1e3a8a;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: #f59e0b;
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 50px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-content {
+      flex: 1;
+      color: white;
+    }
+
+    .hero-content h1 {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero-content h1 span {
+      color: #fbbf24;
+    }
+
+    .hero-content p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .btn-large {
+      padding: 15px 40px;
+      font-size: 16px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .resume-preview-box {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      width: 350px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      transform: rotate(3deg);
+    }
+
+    .resume-preview-box .photo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 50%;
+      margin: 0 auto 15px;
+    }
+
+    .resume-preview-box h3 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 5px;
+    }
+
+    .resume-preview-box .title {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .resume-preview-box .section {
+      margin-bottom: 15px;
+    }
+
+    .resume-preview-box .section-title {
+      color: #1e3a8a;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 3px;
+    }
+
+    .resume-preview-box .bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+
+    .resume-preview-box .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+      border-radius: 4px;
+    }
+
+    /* Features Section */
+    .features {
+      background: white;
+      padding: 80px 50px;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 36px;
+      color: #1e3a8a;
+      margin-bottom: 50px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: #f8fafc;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 24px;
+    }
+
+    .feature-card h3 {
+      color: #1e3a8a;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Templates Section */
+    .templates {
+      background: #f8fafc;
+      padding: 80px 50px;
+    }
+
+    .templates h2 {
+      text-align: center;
+      font-size: 36px;
+      color: #1e3a8a;
+      margin-bottom: 50px;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .template-item {
+      height: 150px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .template-item:hover {
+      transform: scale(1.05);
+    }
+
+    .template-item span {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    /* Footer */
+    footer {
+      background: #1e3a8a;
+      color: white;
+      padding: 40px 50px;
+      text-align: center;
+    }
+
+    footer p {
+      opacity: 0.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 50px 30px;
+      }
+
+      .hero-content h1 {
+        font-size: 36px;
+      }
+
+      .hero-content p {
+        margin: 0 auto 30px;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-image {
+        margin-top: 50px;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .templates-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero {
+        padding: 40px 20px;
+      }
+
+      .hero-content h1 {
+        font-size: 28px;
+      }
+
+      .hero-content p {
+        font-size: 15px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .btn-large {
+        padding: 14px 30px;
+        font-size: 15px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .resume-preview-box {
+        width: 280px;
+        padding: 20px;
+        transform: rotate(0deg);
+      }
+
+      .features {
+        padding: 50px 20px;
+      }
+
+      .features h2 {
+        font-size: 26px;
+        margin-bottom: 30px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .templates {
+        padding: 50px 20px;
+      }
+
+      .templates h2 {
+        font-size: 26px;
+        margin-bottom: 30px;
+      }
+
+      .templates-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .template-item {
+        height: 120px;
+        font-size: 14px;
+      }
+
+      footer {
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 24px;
+      }
+
+      .resume-preview-box {
+        width: 250px;
+        padding: 15px;
+      }
+
+      .resume-preview-box h3 {
+        font-size: 16px;
+      }
+
+      .resume-preview-box .photo {
+        width: 60px;
+        height: 60px;
+      }
+
+      .features h2,
+      .templates h2 {
+        font-size: 22px;
+      }
+
+      .feature-card {
+        padding: 20px;
+      }
+
+      .template-item {
+        height: 100px;
+        font-size: 12px;
+      }
+
+      .template-item span {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="logo">Resume<span>Builder</span></div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#templates">Templates</a>
+    <a href="#about">About</a>
+  </div>
+  <div class="nav-buttons">
+    <a href="login.html" class="btn-outline">Login</a>
+    <a href="signup.html" class="btn-primary">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Build Your <span>Professional Resume</span> in Minutes</h1>
+    <p>Create stunning, ATS-friendly resumes with our easy-to-use builder. Choose from 20+ professional templates and land your dream job.</p>
+    <div class="hero-buttons">
+      <a href="signup.html" class="btn-primary btn-large">Get Started Free</a>
+      <a href="#templates" class="btn-outline btn-large">View Templates</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="resume-preview-box">
+      <div class="photo"></div>
+      <h3>John Doe</h3>
+      <div class="title">Software Engineer</div>
+      <div class="section">
+        <div class="section-title">SKILLS</div>
+        <div class="bar"><div class="bar-fill" style="width: 90%"></div></div>
+        <div class="bar"><div class="bar-fill" style="width: 85%"></div></div>
+        <div class="bar"><div class="bar-fill" style="width: 75%"></div></div>
+      </div>
+      <div class="section">
+        <div class="section-title">EXPERIENCE</div>
+        <div class="bar"><div class="bar-fill" style="width: 100%"></div></div>
+        <div class="bar"><div class="bar-fill" style="width: 80%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+  <h2>Why Choose Our Resume Builder?</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <h3>Easy to Use</h3>
+      <p>Simple drag-and-drop interface. No design skills required.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>20+ Templates</h3>
+      <p>Professional templates with different fonts and color schemes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>PDF Download</h3>
+      <p>Download your resume as a high-quality PDF instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Summary</h3>
+      <p>Generate professional summaries with one click.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Templates Section -->
+<section class="templates" id="templates">
+  <h2>Beautiful Templates for Every Industry</h2>
+  <div class="templates-grid">
+    <div class="template-item" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">Modern Blue<span>Poppins</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #374151, #6b7280);">Classic Gray<span>Roboto</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">Elegant Purple<span>Playfair</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #059669, #34d399);">Nature Green<span>Open Sans</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #ea580c, #fb923c);">Sunset Orange<span>Lato</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #0d9488, #2dd4bf);">Ocean Teal<span>Montserrat</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #db2777, #f472b6);">Rose Pink<span>Raleway</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #1f2937, #4b5563);">Midnight Dark<span>Merriweather</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #dc2626, #f87171);">Ruby Red<span>Ubuntu</span></div>
+    <div class="template-item" style="background: linear-gradient(135deg, #4f46e5, #818cf8);">Indigo Royal<span>Work Sans</span></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 ResumeBuilder. All rights reserved. | Built with ❤️</p>
+</footer>
+
+</body>
+</html>

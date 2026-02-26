@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Resume Builder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f3f4f6;
+    color: #333;
+}
+
+header {
+    background: #1e3a8a;
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 { margin:0; font-size:20px; }
+
+header button {
+    background:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+main {
+    max-width: 900px;
+    margin:30px auto;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.section-title {
+    color:#1e3a8a;
+    margin-bottom:15px;
+    font-size:22px;
+}
+
+/* SECTION CARD STYLE */
+.section-card{
+    background:#f8f9fc;
+    padding:25px;
+    border-radius:16px;
+    margin-top:30px;
+}
+
+.section-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.circle{
+    width:35px;
+    height:35px;
+    background:#1e3a8a;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+}
+
+.section-card h3{
+    margin:0;
+    font-weight:600;
+}
+
+.input-group { margin-bottom:15px; }
+
+.input-group label {
+    display:block;
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width:100%;
+    padding:10px;
+    font-size:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+/* Bullet styling for select options */
+.input-group select option {
+    padding:10px;
+}
+
+.input-group select option::before {
+    content: "• ";
+}
+
+textarea { resize: vertical; }
+
+.two-column {
+    display:flex;
+    gap:30px;
+}
+
+.column { flex:1; }
+
+.buttons {
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+}
+
+.btn {
+    background:#1e3a8a;
+    color:white;
+    border:none;
+    padding:12px;
+    font-size:15px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    flex:1;
+}
+
+.btn:hover { background:#1e3a8a; }
+
+.add-btn {
+    margin-top:5px;
+    background:#4a90e2;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    cursor:pointer;
+    border-radius:4px;
+    font-weight:700;
+}
+
+.entry-container {
+    border:1px solid #ccc;
+    padding:10px;
+    border-radius:5px;
+    margin-top:5px;
+    position: relative;
+}
+
+/* ENTRY BOX */
+.entry-box{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    border-left:5px solid #1e3a8a;
+    margin-bottom:15px;
+    position:relative;
+}
+
+.entry-box input,
+.entry-box textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:10px;
+    font-family:'Poppins';
+    box-sizing:border-box;
+}
+
+.entry-box textarea{
+    resize:vertical;
+}
+
+.remove-btn {
+    background:none;
+    border:none;
+    color:#dc2626;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.dashed-btn{
+    width:100%;
+    padding:12px;
+    border:2px dashed #94a3b8;
+    background:transparent;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.resume-preview {
+    margin-top:40px;
+    padding:20px;
+    background:white;
+    border-radius:12px;
+    border:1px solid #ddd;
+}
+
+.profile-preview {
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.required { color:red; }
+
+/* TEMPLATE GRID */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.template-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.template-card:hover {
+    border-color: #1e3a8a;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.template-card.selected {
+    border-color: #1e3a8a;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+}
+
+.template-preview {
+    height: 80px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.template-preview .preview-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.template-preview .preview-text {
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.template-card .template-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 5px;
+}
+
+.template-card .template-font {
+    font-size: 10px;
+    color: #666;
+}
+
+/* RESPONSIVE STYLES */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    main {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .template-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .two-column {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 16px;
+    }
+
+    main {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .section-card {
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .section-header {
+        gap: 10px;
+    }
+
+    .circle {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .section-card h3 {
+        font-size: 16px;
+    }
+
+    .template-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .template-card {
+        padding: 10px;
+    }
+
+    .template-preview {
+        height: 60px;
+        padding: 8px;
+    }
+
+    .template-preview .preview-name {
+        font-size: 12px;
+    }
+
+    .template-preview .preview-text {
+        font-size: 8px;
+    }
+
+    .template-card .template-name {
+        font-size: 10px;
+    }
+
+    .template-card .template-font {
+        font-size: 8px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        padding: 14px;
+        font-size: 14px;
+    }
+
+    .input-group input,
+    .input-group textarea,
+    .input-group select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
+    }
+
+    .entry-box {
+        padding: 15px;
+    }
+
+    .entry-box input,
+    .entry-box textarea {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .profile-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .resume-preview {
+        padding: 15px;
+        overflow-x: auto;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 14px;
+    }
+
+    .template-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .template-preview {
+        height: 50px;
+    }
+
+    .section-card h3 {
+        font-size: 14px;
+    }
+
+    .dashed-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Welcome 🎉 <span id="userEmail"></span></h1>
+<button onclick="logout()">Logout</button>
+</header>
+
+<main>
+
+<h2 class="section-title">Professional Resume Builder</h2>
+
+<!-- TEMPLATE -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">1</div>
+<h3>Select Resume Template</h3>
+</div>
+<input type="hidden" id="template" value="modern-blue">
+<div class="template-grid">
+
+<!-- Template 1 -->
+<div class="template-card selected" onclick="selectTemplate('modern-blue', 'Poppins', '#1e3a8a', '#f8f9fc')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; font-family: 'Poppins';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Modern Blue</div>
+<div class="template-font">Poppins</div>
+</div>
+
+<!-- Template 2 -->
+<div class="template-card" onclick="selectTemplate('classic-gray', 'Roboto', '#374151', '#f3f4f6')">
+<div class="template-preview" style="background: linear-gradient(135deg, #374151, #6b7280); color: white; font-family: 'Roboto';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Classic Gray</div>
+<div class="template-font">Roboto</div>
+</div>
+
+<!-- Template 3 -->
+<div class="template-card" onclick="selectTemplate('elegant-purple', 'Playfair Display', '#7c3aed', '#faf5ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white; font-family: 'Playfair Display';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Elegant Purple</div>
+<div class="template-font">Playfair Display</div>
+</div>
+
+<!-- Template 4 -->
+<div class="template-card" onclick="selectTemplate('nature-green', 'Open Sans', '#059669', '#ecfdf5')">
+<div class="template-preview" style="background: linear-gradient(135deg, #059669, #34d399); color: white; font-family: 'Open Sans';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Nature Green</div>
+<div class="template-font">Open Sans</div>
+</div>
+
+<!-- Template 5 -->
+<div class="template-card" onclick="selectTemplate('sunset-orange', 'Lato', '#ea580c', '#fff7ed')">
+<div class="template-preview" style="background: linear-gradient(135deg, #ea580c, #fb923c); color: white; font-family: 'Lato';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Sunset Orange</div>
+<div class="template-font">Lato</div>
+</div>
+
+<!-- Template 6 -->
+<div class="template-card" onclick="selectTemplate('ocean-teal', 'Montserrat', '#0d9488', '#f0fdfa')">
+<div class="template-preview" style="background: linear-gradient(135deg, #0d9488, #2dd4bf); color: white; font-family: 'Montserrat';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Ocean Teal</div>
+<div class="template-font">Montserrat</div>
+</div>
+
+<!-- Template 7 -->
+<div class="template-card" onclick="selectTemplate('rose-pink', 'Raleway', '#db2777', '#fdf2f8')">
+<div class="template-preview" style="background: linear-gradient(135deg, #db2777, #f472b6); color: white; font-family: 'Raleway';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Rose Pink</div>
+<div class="template-font">Raleway</div>
+</div>
+
+<!-- Template 8 -->
+<div class="template-card" onclick="selectTemplate('midnight-dark', 'Merriweather', '#1f2937', '#f9fafb')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1f2937, #4b5563); color: white; font-family: 'Merriweather';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Midnight Dark</div>
+<div class="template-font">Merriweather</div>
+</div>
+
+<!-- Template 9 -->
+<div class="template-card" onclick="selectTemplate('sky-cyan', 'Source Sans Pro', '#0891b2', '#ecfeff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #0891b2, #22d3ee); color: white; font-family: 'Source Sans Pro';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Sky Cyan</div>
+<div class="template-font">Source Sans Pro</div>
+</div>
+
+<!-- Template 10 -->
+<div class="template-card" onclick="selectTemplate('golden-amber', 'Nunito', '#d97706', '#fffbeb')">
+<div class="template-preview" style="background: linear-gradient(135deg, #d97706, #fbbf24); color: white; font-family: 'Nunito';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Golden Amber</div>
+<div class="template-font">Nunito</div>
+</div>
+
+<!-- Template 11 -->
+<div class="template-card" onclick="selectTemplate('ruby-red', 'Ubuntu', '#dc2626', '#fef2f2')">
+<div class="template-preview" style="background: linear-gradient(135deg, #dc2626, #f87171); color: white; font-family: 'Ubuntu';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Ruby Red</div>
+<div class="template-font">Ubuntu</div>
+</div>
+
+<!-- Template 12 -->
+<div class="template-card" onclick="selectTemplate('indigo-royal', 'Work Sans', '#4f46e5', '#eef2ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #4f46e5, #818cf8); color: white; font-family: 'Work Sans';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Indigo Royal</div>
+<div class="template-font">Work Sans</div>
+</div>
+
+<!-- Template 13 -->
+<div class="template-card" onclick="selectTemplate('lime-fresh', 'Quicksand', '#65a30d', '#f7fee7')">
+<div class="template-preview" style="background: linear-gradient(135deg, #65a30d, #a3e635); color: white; font-family: 'Quicksand';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Lime Fresh</div>
+<div class="template-font">Quicksand</div>
+</div>
+
+<!-- Template 14 -->
+<div class="template-card" onclick="selectTemplate('fuchsia-bold', 'Josefin Sans', '#c026d3', '#fdf4ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #c026d3, #e879f9); color: white; font-family: 'Josefin Sans';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Fuchsia Bold</div>
+<div class="template-font">Josefin Sans</div>
+</div>
+
+<!-- Template 15 -->
+<div class="template-card" onclick="selectTemplate('slate-minimal', 'Libre Baskerville', '#475569', '#f8fafc')">
+<div class="template-preview" style="background: linear-gradient(135deg, #475569, #94a3b8); color: white; font-family: 'Libre Baskerville';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Slate Minimal</div>
+<div class="template-font">Libre Baskerville</div>
+</div>
+
+<!-- Template 16 -->
+<div class="template-card" onclick="selectTemplate('emerald-pro', 'Crimson Text', '#047857', '#ecfdf5')">
+<div class="template-preview" style="background: linear-gradient(135deg, #047857, #10b981); color: white; font-family: 'Crimson Text';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Emerald Pro</div>
+<div class="template-font">Crimson Text</div>
+</div>
+
+<!-- Template 17 -->
+<div class="template-card" onclick="selectTemplate('violet-dream', 'Cabin', '#7c3aed', '#f5f3ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white; font-family: 'Cabin';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Violet Dream</div>
+<div class="template-font">Cabin</div>
+</div>
+
+<!-- Template 18 -->
+<div class="template-card" onclick="selectTemplate('coral-warm', 'Arimo', '#f97316', '#fff7ed')">
+<div class="template-preview" style="background: linear-gradient(135deg, #f97316, #fdba74); color: white; font-family: 'Arimo';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Coral Warm</div>
+<div class="template-font">Arimo</div>
+</div>
+
+<!-- Template 19 -->
+<div class="template-card" onclick="selectTemplate('navy-executive', 'Bitter', '#1e40af', '#eff6ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; font-family: 'Bitter';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Navy Executive</div>
+<div class="template-font">Bitter</div>
+</div>
+
+<!-- Template 20 -->
+<div class="template-card" onclick="selectTemplate('steel-corporate', 'Fira Sans', '#334155', '#f1f5f9')">
+<div class="template-preview" style="background: linear-gradient(135deg, #334155, #64748b); color: white; font-family: 'Fira Sans';">
+<div class="preview-name">John Doe</div>
+<div class="preview-text">Software Engineer</div>
+</div>
+<div class="template-name">Steel Corporate</div>
+<div class="template-font">Fira Sans</div>
+</div>
+
+</div>
+</div>
+
+<!-- PERSONAL INFO -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">2</div>
+<h3>Personal Information</h3>
+</div>
+
+<div class="input-group">
+<label>Profile Photo</label>
+<input type="file" id="profilePhoto" accept="image/*">
+<img id="profilePreview" class="profile-preview" style="display:none;">
+</div>
+
+<div class="input-group">
+<label>Name <span class="required">*</span></label>
+<input type="text" id="name">
+</div>
+
+<div class="two-column">
+<div class="column input-group">
+<label>Age <span class="required">*</span></label>
+<input type="number" id="age">
+</div>
+<div class="column input-group">
+<label>Phone <span class="required">*</span></label>
+<input type="text" id="phone">
+</div>
+</div>
+
+<div class="input-group">
+<label>Address <span class="required">*</span></label>
+<input type="text" id="address">
+</div>
+
+<div class="two-column">
+<div class="column input-group">
+<label>LinkedIn</label>
+<input type="url" id="linkedin">
+</div>
+<div class="column input-group">
+<label>GitHub</label>
+<input type="url" id="github">
+</div>
+</div>
+</div>
+
+<!-- SUMMARY -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">3</div>
+<h3>Professional Summary <span class="required">*</span></h3>
+</div>
+<div class="input-group">
+<textarea id="summary" rows="4"></textarea>
+<button class="add-btn" onclick="generateSummary()">Generate AI Summary</button>
+</div>
+</div>
+
+<!-- SKILLS -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">4</div>
+<h3>Skills <span class="required">*</span></h3>
+</div>
+<div class="input-group">
+<input type="text" id="skills">
+</div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">5</div>
+<h3>Work Experience</h3>
+</div>
+<div id="experienceContainer"></div>
+<button class="dashed-btn" onclick="addExperience()">+ Add Experience</button>
+</div>
+
+<!-- EDUCATION -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">6</div>
+<h3>Education <span class="required">*</span></h3>
+</div>
+<div id="educationContainer"></div>
+<button class="dashed-btn" onclick="addEducation()">+ Add Education</button>
+</div>
+
+<!-- BUTTONS -->
+<div class="buttons">
+<button class="btn" onclick="previewResume()">Preview Resume</button>
+<button class="btn" onclick="downloadResume()">Download Resume PDF</button>
+</div>
+
+<!-- PREVIEW -->
+<div class="resume-preview" id="resumePreview"></div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+
+// PHOTO PREVIEW
+document.getElementById('profilePhoto').addEventListener('change', function(e){
+const file = e.target.files[0];
+if(file){
+const reader = new FileReader();
+reader.onload = function(evt){
+const img = document.getElementById('profilePreview');
+img.src = evt.target.result;
+img.style.display = 'block';
+};
+reader.readAsDataURL(file);
+}
+});
+
+// GENERATE SUMMARY
+function generateSummary(){
+const name = document.getElementById('name').value || "Professional";
+const skills = document.getElementById('skills').value || "multiple skills";
+document.getElementById('summary').value =
+`${name} is a skilled individual with expertise in ${skills}. Dedicated to delivering excellence and achieving organizational goals.`;
+}
+
+// TEMPLATE SELECTION
+let selectedTemplate = {
+    name: 'modern-blue',
+    font: 'Poppins',
+    color: '#1e3a8a',
+    bgColor: '#f8f9fc'
+};
+
+function selectTemplate(name, font, color, bgColor) {
+    selectedTemplate = { name, font, color, bgColor };
+    document.getElementById('template').value = name;
+    
+    // Update selected state
+    document.querySelectorAll('.template-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+}
+
+// ADD EDUCATION
+function addEducation(){
+const container = document.getElementById('educationContainer');
+const div = document.createElement('div');
+div.className = 'entry-box';
+div.innerHTML = `
+<input type="text" placeholder="School/University" class="eduInstitution">
+<input type="text" placeholder="Degree" class="eduDegree">
+<input type="text" placeholder="Field of Study" class="eduField">
+<input type="text" placeholder="Graduation Year" class="eduYear">
+<textarea placeholder="GPA, achievements, relevant courses..." class="eduDetails"></textarea>
+<input type="file" class="eduResult">
+<button class="remove-btn" onclick="this.parentElement.remove()">🗑 Remove</button>
+`;
+container.appendChild(div);
+}
+
+// ADD EXPERIENCE
+function addExperience(){
+const container = document.getElementById('experienceContainer');
+const div = document.createElement('div');
+div.className = 'entry-box';
+div.innerHTML = `
+<input type="text" placeholder="Position" class="expTitle">
+<input type="text" placeholder="Company" class="expCompany">
+<div style="display:flex; gap:10px;">
+<input type="text" placeholder="Start Year" class="expStart">
+<input type="text" placeholder="End Year" class="expEnd">
+</div>
+<textarea placeholder="Describe your responsibilities and achievements..." class="expDetails"></textarea>
+<input type="file" class="expLetter">
+<button class="remove-btn" onclick="this.parentElement.remove()">🗑 Remove</button>
+`;
+container.appendChild(div);
+}
+
+// Helper function to read file as base64
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            resolve(null);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+}
+
+// PREVIEW
+async function previewResume(){
+
+const color = selectedTemplate.color;
+const font = selectedTemplate.font;
+const bgColor = selectedTemplate.bgColor;
+
+const userName = document.getElementById('name').value;
+const userAge = document.getElementById('age').value;
+const userPhone = document.getElementById('phone').value;
+const userAddress = document.getElementById('address').value;
+const userLinkedin = document.getElementById('linkedin').value;
+const userGithub = document.getElementById('github').value;
+const userSummary = document.getElementById('summary').value;
+const userSkills = document.getElementById('skills').value;
+
+// Get profile photo
+const profilePhotoFile = document.getElementById('profilePhoto').files[0];
+let profilePhotoHtml = "";
+if (profilePhotoFile) {
+    const profilePhotoData = await readFileAsDataURL(profilePhotoFile);
+    if (profilePhotoData) {
+        profilePhotoHtml = `<img src="${profilePhotoData}" style="width:120px; height:120px; object-fit:cover; border-radius:50%; margin-bottom:15px;">`;
+    }
+}
+
+let educationHtml = "";
+const eduDegrees = document.querySelectorAll('.eduDegree');
+for (let i = 0; i < eduDegrees.length; i++) {
+    const deg = eduDegrees[i];
+    const inst = document.querySelectorAll('.eduInstitution')[i]?.value || "";
+    const field = document.querySelectorAll('.eduField')[i]?.value || "";
+    const year = document.querySelectorAll('.eduYear')[i]?.value || "";
+    const details = document.querySelectorAll('.eduDetails')[i]?.value || "";
+    const file = document.querySelectorAll('.eduResult')[i]?.files[0];
+    
+    if(deg.value || inst){
+        educationHtml += `<div style="margin-bottom:15px; padding:10px; border-left:3px solid ${color};">`;
+        educationHtml += `<p><b>${deg.value}</b> - ${inst}</p>`;
+        if(field) educationHtml += `<p>Field: ${field}</p>`;
+        if(year) educationHtml += `<p>Year: ${year}</p>`;
+        if(details) educationHtml += `<p>${details}</p>`;
+        if(file) {
+            const fileData = await readFileAsDataURL(file);
+            if (fileData && file.type.startsWith('image/')) {
+                educationHtml += `<p><b>Result Document:</b></p><img src="${fileData}" style="max-width:200px; max-height:150px; border:1px solid #ddd; border-radius:5px;">`;
+            } else if (fileData) {
+                educationHtml += `<p><b>Result Document:</b> ${file.name}</p>`;
+            }
+        }
+        educationHtml += `</div>`;
+    }
+}
+
+let expHtml = "";
+const expTitles = document.querySelectorAll('.expTitle');
+for (let i = 0; i < expTitles.length; i++) {
+    const title = expTitles[i];
+    const comp = document.querySelectorAll('.expCompany')[i]?.value || "";
+    const start = document.querySelectorAll('.expStart')[i]?.value || "";
+    const end = document.querySelectorAll('.expEnd')[i]?.value || "";
+    const details = document.querySelectorAll('.expDetails')[i]?.value || "";
+    const file = document.querySelectorAll('.expLetter')[i]?.files[0];
+    
+    if(title.value || comp){
+        expHtml += `<div style="margin-bottom:15px; padding:10px; border-left:3px solid ${color};">`;
+        expHtml += `<p><b>${title.value}</b> - ${comp}</p>`;
+        if(start || end) expHtml += `<p>${start} - ${end}</p>`;
+        if(details) expHtml += `<p>${details}</p>`;
+        if(file) {
+            const fileData = await readFileAsDataURL(file);
+            if (fileData && file.type.startsWith('image/')) {
+                expHtml += `<p><b>Experience Letter:</b></p><img src="${fileData}" style="max-width:200px; max-height:150px; border:1px solid #ddd; border-radius:5px;">`;
+            } else if (fileData) {
+                expHtml += `<p><b>Experience Letter:</b> ${file.name}</p>`;
+            }
+        }
+        expHtml += `</div>`;
+    }
+}
+
+document.getElementById('resumePreview').innerHTML = `
+<div style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
+${profilePhotoHtml}
+<h2 style="color:${color}; margin-bottom: 10px;">${userName}</h2>
+<p><b>Age:</b> ${userAge} | <b>Phone:</b> ${userPhone}</p>
+<p><b>Address:</b> ${userAddress}</p>
+${userLinkedin ? `<p><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
+${userGithub ? `<p><b>GitHub:</b> ${userGithub}</p>` : ""}
+<p><b>Skills:</b> ${userSkills}</p>
+<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Professional Summary</h3>
+<p>${userSummary}</p>
+<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Education</h3>
+${educationHtml}
+${expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3>${expHtml}` : ""}
+</div>
+`;
+
+}
+
+// DOWNLOAD EXACT PREVIEW
+async function downloadResume(){
+await previewResume();
+const element = document.getElementById("resumePreview");
+const canvas = await html2canvas(element, { scale:2, useCORS: true });
+const imgData = canvas.toDataURL("image/png");
+const { jsPDF } = window.jspdf;
+const pdf = new jsPDF("p","mm","a4");
+const imgWidth = 190;
+const imgHeight = canvas.height * imgWidth / canvas.width;
+pdf.addImage(imgData,"PNG",10,10,imgWidth,imgHeight);
+pdf.save("Resume.pdf");
+}
+
+function logout(){
+    // Sign out from Firebase
+    import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ getAuth, signOut }) => {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            window.location.href = "login.html";
+        }).catch((error) => {
+            console.error("Logout error:", error);
+            window.location.href = "login.html";
+        });
+    });
+}
+
+</script>
+
+<!-- Firebase Auth Check -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDGBEkdKB2w6vS3oD1y6mvgKkG7s2_L-tw",
+    authDomain: "resume-builder-app-1024d.firebaseapp.com",
+    projectId: "resume-builder-app-1024d",
+    storageBucket: "resume-builder-app-1024d.firebasestorage.app",
+    messagingSenderId: "851501862995",
+    appId: "1:851501862995:web:1df4820f8d15ec2f72f6a6",
+    measurementId: "G-7LCTFBQF2H"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Check auth state
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is signed in
+        document.getElementById('userEmail').textContent = user.email;
+    } else {
+        // User is signed out, redirect to login
+        window.location.href = "login.html";
+    }
+});
+
+// Make logout available globally
+window.logout = function() {
+    signOut(auth).then(() => {
+        window.location.href = "login.html";
+    }).catch((error) => {
+        console.error("Logout error:", error);
+        window.location.href = "login.html";
+    });
+};
+</script>
+
+</body>
+</html>
