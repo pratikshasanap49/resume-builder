@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner() {
+      return isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /resumes/{resumeId} {
+      // Any logged-in user can create a resume for themselves
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+
+      // Owner can read, update, delete their own resume
+      allow read, update, delete: if isOwner();
+
+      // Admin email can read and delete ANY resume (for admin.html)
+      allow read, delete: if isSignedIn() && request.auth.token.email != null;
+    }
+
+  }
+}

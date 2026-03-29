@@ -454,6 +454,78 @@ textarea { resize: vertical; }
     }
 }
 
+
+/* Toast notification */
+#toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #1e3a8a;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    z-index: 9999;
+    transition: opacity 0.5s;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    pointer-events: none;
+}
+
+/* Saved Resumes Section */
+.saved-resumes-section {
+    background: #f8f9fc;
+    padding: 25px;
+    border-radius: 16px;
+    margin-top: 40px;
+}
+.saved-resumes-section h3 {
+    color: #1e3a8a;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+.saved-resume-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
+}
+.saved-resume-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.resume-meta h4 { margin: 0 0 4px 0; color: #1e3a8a; font-size: 16px; }
+.resume-meta span { font-size: 12px; color: #6b7280; }
+.saved-resume-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.load-btn {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.load-btn:hover { background: #1e40af; }
+.delete-saved-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.2s;
+}
+.delete-saved-btn:hover { background: #fecaca; }
+@media (max-width: 768px) {
+    .saved-resume-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .saved-resume-actions { width: 100%; justify-content: flex-end; }
+}
 </style>
 </head>
 
@@ -463,6 +535,8 @@ textarea { resize: vertical; }
 <h1>Welcome 🎉 <span id="userEmail"></span></h1>
 <button onclick="logout()">Logout</button>
 </header>
+
+<div id="toast" style="display:none;"></div>
 
 <main>
 
@@ -769,14 +843,37 @@ textarea { resize: vertical; }
 <button class="dashed-btn" onclick="addEducation()">+ Add Education</button>
 </div>
 
+<!-- DOWNLOAD SETTINGS -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">7</div>
+<h3>Download Settings</h3>
+</div>
+<div class="input-group">
+<label>Paper Size</label>
+<select id="paperSize">
+<option value="a4">A4 (210 × 297 mm) — Standard International</option>
+<option value="letter">Letter (216 × 279 mm) — US Standard</option>
+<option value="legal">Legal (216 × 356 mm) — US Legal</option>
+<option value="a3">A3 (297 × 420 mm) — Large Format</option>
+</select>
+</div>
+</div>
+
 <!-- BUTTONS -->
 <div class="buttons">
-<button class="btn" onclick="previewResume()">Preview Resume</button>
-<button class="btn" onclick="downloadResume()">Download Resume PDF</button>
+<button class="btn" onclick="previewResume()">👁 Preview &amp; Save Resume</button>
+<button class="btn" onclick="downloadResume()">⬇ Download PDF</button>
 </div>
 
 <!-- PREVIEW -->
 <div class="resume-preview" id="resumePreview"></div>
+
+<!-- SAVED RESUMES -->
+<div class="saved-resumes-section">
+<h3>📂 My Saved Resumes</h3>
+<div id="savedResumesList"><p style="color:#6b7280; text-align:center; padding:20px;">Loading your saved resumes...</p></div>
+</div>
 
 </main>
 
@@ -799,12 +896,100 @@ reader.readAsDataURL(file);
 }
 });
 
-// GENERATE SUMMARY
+// GENERATE AI SUMMARY
 function generateSummary(){
-const name = document.getElementById('name').value || "Professional";
-const skills = document.getElementById('skills').value || "multiple skills";
-document.getElementById('summary').value =
-`${name} is a skilled individual with expertise in ${skills}. Dedicated to delivering excellence and achieving organizational goals.`;
+    const name = document.getElementById('name').value.trim() || "This professional";
+    const skillsRaw = document.getElementById('skills').value.trim();
+    const skillsList = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+    // Collect experience data
+    const expTitleEls = document.querySelectorAll('.expTitle');
+    const roles = [];
+    const expAchievements = [];
+    for (let i = 0; i < expTitleEls.length; i++) {
+        const title = expTitleEls[i]?.value.trim();
+        const company = document.querySelectorAll('.expCompany')[i]?.value.trim() || "";
+        const start  = document.querySelectorAll('.expStart')[i]?.value.trim()  || "";
+        const end    = document.querySelectorAll('.expEnd')[i]?.value.trim()    || "";
+        const details = document.querySelectorAll('.expDetails')[i]?.value.trim() || "";
+        if (title || company) roles.push({ title, company, start, end, details });
+        if (details) expAchievements.push(details);
+    }
+
+    // Collect education data
+    const eduDegreeEls = document.querySelectorAll('.eduDegree');
+    const educations = [];
+    const eduAchievements = [];
+    for (let i = 0; i < eduDegreeEls.length; i++) {
+        const deg     = eduDegreeEls[i]?.value.trim();
+        const inst    = document.querySelectorAll('.eduInstitution')[i]?.value.trim() || "";
+        const field   = document.querySelectorAll('.eduField')[i]?.value.trim()       || "";
+        const year    = document.querySelectorAll('.eduYear')[i]?.value.trim()        || "";
+        const details = document.querySelectorAll('.eduDetails')[i]?.value.trim()    || "";
+        if (deg || inst) educations.push({ deg, inst, field, year, details });
+        if (details) eduAchievements.push(details);
+    }
+
+    const parts = [];
+
+    // 1. Opening line with name + top skills
+    let intro = name !== "This professional" ? `${name} is` : "A";
+    intro += " a results-driven and highly motivated professional";
+    if (skillsList.length > 0) {
+        const topSkills = skillsList.slice(0, 4).join(', ');
+        intro += ` with strong expertise in ${topSkills}`;
+        if (skillsList.length > 4) intro += ` among other key competencies`;
+    }
+    parts.push(intro + ".");
+
+    // 2. Education background
+    if (educations.length > 0) {
+        const eduStr = educations.map(e => {
+            let s = e.deg ? `a ${e.deg}` : "";
+            if (e.field) s += ` in ${e.field}`;
+            if (e.inst)  s += ` from ${e.inst}`;
+            if (e.year)  s += ` (${e.year})`;
+            return s;
+        }).filter(Boolean).join(' and ');
+        if (eduStr) parts.push(`Academically grounded with ${eduStr}.`);
+    }
+
+    // 3. Professional experience
+    if (roles.length === 1) {
+        let expPart = `Professionally experienced as ${roles[0].title || "a professional"}`;
+        if (roles[0].company) expPart += ` at ${roles[0].company}`;
+        if (roles[0].start)   expPart += ` (${roles[0].start}${roles[0].end ? " – " + roles[0].end : " – Present"})`;
+        parts.push(expPart + ".");
+    } else if (roles.length > 1) {
+        const roleStr = roles.map(r => `${r.title || ""}${r.company ? " at " + r.company : ""}`).filter(Boolean).join(', ');
+        parts.push(`Brings ${roles.length} diverse professional roles including ${roleStr}.`);
+    }
+
+    // 4. Work achievements & responsibilities
+    if (expAchievements.length > 0) {
+        let achPart = "Professional highlights and key achievements include: ";
+        achPart += expAchievements.map(a => a.length > 180 ? a.substring(0, 177) + "..." : a).join(". Furthermore, ");
+        if (!achPart.endsWith('.')) achPart += ".";
+        parts.push(achPart);
+    }
+
+    // 5. Educational achievements / GPA / awards
+    if (eduAchievements.length > 0) {
+        let eduAchPart = "Notable academic achievements, honours, and milestones include: ";
+        eduAchPart += eduAchievements.map(a => a.length > 180 ? a.substring(0, 177) + "..." : a).join(". Also, ");
+        if (!eduAchPart.endsWith('.')) eduAchPart += ".";
+        parts.push(eduAchPart);
+    }
+
+    // 6. Full skill set
+    if (skillsList.length > 0) {
+        parts.push(`Equipped with a comprehensive skill set covering ${skillsList.join(', ')}.`);
+    }
+
+    // 7. Closing statement
+    parts.push("Committed to continuous learning, professional development, and delivering exceptional results that create meaningful impact and drive organisational success.");
+
+    document.getElementById('summary').value = parts.join(' ');
 }
 
 // TEMPLATE SELECTION
@@ -974,6 +1159,10 @@ ${expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px sol
 </div>
 `;
 
+    // Auto-save to Firebase after every preview
+    if (typeof window.saveResumeToFirestore === 'function') {
+        window.saveResumeToFirestore();
+    }
 }
 
 // DOWNLOAD EXACT PREVIEW
@@ -983,11 +1172,26 @@ const element = document.getElementById("resumePreview");
 const canvas = await html2canvas(element, { scale:2, useCORS: true });
 const imgData = canvas.toDataURL("image/png");
 const { jsPDF } = window.jspdf;
-const pdf = new jsPDF("p","mm","a4");
-const imgWidth = 190;
+const paperSize = document.getElementById("paperSize")?.value || "a4";
+const pdf = new jsPDF("p", "mm", paperSize);
+const pageWidth  = pdf.internal.pageSize.getWidth();
+const pageHeight = pdf.internal.pageSize.getHeight();
+const imgWidth  = pageWidth - 20;
 const imgHeight = canvas.height * imgWidth / canvas.width;
-pdf.addImage(imgData,"PNG",10,10,imgWidth,imgHeight);
-pdf.save("Resume.pdf");
+// Split into pages if content overflows
+const totalPages = Math.ceil(imgHeight / (pageHeight - 20));
+for (let page = 0; page < totalPages; page++) {
+    if (page > 0) pdf.addPage();
+    const srcY  = page * (canvas.height / totalPages);
+    const srcH  = canvas.height / totalPages;
+    const slice = document.createElement('canvas');
+    slice.width  = canvas.width;
+    slice.height = srcH;
+    slice.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+    pdf.addImage(slice.toDataURL("image/png"), "PNG", 10, 10, imgWidth, pageHeight - 20);
+}
+const userName = document.getElementById('name').value.trim() || "Resume";
+pdf.save(`${userName}_Resume_${paperSize.toUpperCase()}.pdf`);
 }
 
 function logout(){
@@ -1005,10 +1209,12 @@ function logout(){
 
 </script>
 
-<!-- Firebase Auth Check -->
+<!-- Firebase Auth + Firestore -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp }                           from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where }
+                                                   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDGBEkdKB2w6vS3oD1y6mvgKkG7s2_L-tw",
@@ -1020,29 +1226,202 @@ const firebaseConfig = {
     measurementId: "G-7LCTFBQF2H"
 };
 
-const app = initializeApp(firebaseConfig);
+const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db   = getFirestore(app);
 
-// Check auth state
+let currentUserId    = null;
+let currentUserEmail = null;
+const _resumeMap = {};   // id → data cache for load-resume
+
+// ── AUTH STATE ──────────────────────────────────────────────
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is signed in
+        currentUserId    = user.uid;
+        currentUserEmail = user.email;
         document.getElementById('userEmail').textContent = user.email;
+        loadSavedResumes();
     } else {
-        // User is signed out, redirect to login
         window.location.href = "login.html";
     }
 });
 
-// Make logout available globally
-window.logout = function() {
-    signOut(auth).then(() => {
-        window.location.href = "login.html";
-    }).catch((error) => {
-        console.error("Logout error:", error);
-        window.location.href = "login.html";
+// ── SAVE RESUME TO FIRESTORE ────────────────────────────────
+window.saveResumeToFirestore = async function () {
+    if (!currentUserId) return;
+
+    const educations = [];
+    document.querySelectorAll('.eduDegree').forEach((el, i) => {
+        educations.push({
+            degree:      el.value || "",
+            institution: document.querySelectorAll('.eduInstitution')[i]?.value || "",
+            field:       document.querySelectorAll('.eduField')[i]?.value       || "",
+            year:        document.querySelectorAll('.eduYear')[i]?.value        || "",
+            details:     document.querySelectorAll('.eduDetails')[i]?.value     || ""
+        });
     });
+
+    const experiences = [];
+    document.querySelectorAll('.expTitle').forEach((el, i) => {
+        experiences.push({
+            title:   el.value || "",
+            company: document.querySelectorAll('.expCompany')[i]?.value || "",
+            start:   document.querySelectorAll('.expStart')[i]?.value   || "",
+            end:     document.querySelectorAll('.expEnd')[i]?.value     || "",
+            details: document.querySelectorAll('.expDetails')[i]?.value || ""
+        });
+    });
+
+    const resumeData = {
+        name:        document.getElementById('name').value        || "",
+        age:         document.getElementById('age').value         || "",
+        phone:       document.getElementById('phone').value       || "",
+        address:     document.getElementById('address').value     || "",
+        linkedin:    document.getElementById('linkedin').value    || "",
+        github:      document.getElementById('github').value      || "",
+        summary:     document.getElementById('summary').value     || "",
+        skills:      document.getElementById('skills').value      || "",
+        template:    document.getElementById('template').value    || "modern-blue",
+        education:   educations,
+        experience:  experiences,
+        userId:      currentUserId,
+        userEmail:   currentUserEmail,
+        createdAt:   new Date().toISOString()
+    };
+
+    try {
+        await addDoc(collection(db, "resumes"), resumeData);
+        loadSavedResumes();
+        showToast("✅ Resume saved!");
+    } catch (e) {
+        console.error("Save error:", e);
+        showToast(`❌ Could not save resume: ${e.code || 'unknown-error'}`);
+    }
 };
+
+// ── LOAD SAVED RESUMES LIST ─────────────────────────────────
+async function loadSavedResumes() {
+    if (!currentUserId) return;
+    const container = document.getElementById('savedResumesList');
+    if (!container) return;
+    Object.keys(_resumeMap).forEach((key) => delete _resumeMap[key]);
+
+    try {
+        const q = query(collection(db, "resumes"), where("userId", "==", currentUserId));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            container.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px;">No saved resumes yet. Click "Preview &amp; Save Resume" to save one.</p>';
+            return;
+        }
+
+        const docs = [];
+        snap.forEach(d => { _resumeMap[d.id] = d.data(); docs.push({ id: d.id, ...d.data() }); });
+        docs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        container.innerHTML = docs.map(data => {
+            const date = new Date(data.createdAt).toLocaleString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+            return `
+            <div class="saved-resume-card">
+                <div class="resume-meta">
+                    <h4>${data.name || 'Unnamed Resume'}</h4>
+                    <span>📅 ${date} &nbsp;|&nbsp; 🎨 ${data.template || 'Default'} &nbsp;|&nbsp; 🛠 ${(data.skills || '').split(',').slice(0,3).join(', ') || 'No skills listed'}</span>
+                </div>
+                <div class="saved-resume-actions">
+                    <button class="load-btn" onclick="window.loadResumeData('${data.id}')">📂 Load</button>
+                    <button class="delete-saved-btn" title="Delete" onclick="window.deleteSavedResume('${data.id}')">🗑</button>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        console.error("Load error:", e);
+        container.innerHTML = '<p style="color:#dc2626;text-align:center;">Error loading saved resumes.</p>';
+    }
+}
+
+// ── DELETE SAVED RESUME ─────────────────────────────────────
+window.deleteSavedResume = async function (docId) {
+    if (!currentUserId) return;
+    if (!confirm("Delete this saved resume? This cannot be undone.")) return;
+    try {
+        await deleteDoc(doc(db, "resumes", docId));
+        delete _resumeMap[docId];
+        loadSavedResumes();
+        showToast("Resume deleted.");
+    } catch (e) {
+        console.error("Delete error:", e);
+    }
+};
+
+// ── LOAD RESUME DATA BACK INTO FORM ────────────────────────
+window.loadResumeData = function (id) {
+    const data = _resumeMap[id];
+    if (!data) { showToast("Could not load resume data."); return; }
+
+    document.getElementById('name').value    = data.name    || "";
+    document.getElementById('age').value     = data.age     || "";
+    document.getElementById('phone').value   = data.phone   || "";
+    document.getElementById('address').value = data.address || "";
+    document.getElementById('linkedin').value = data.linkedin || "";
+    document.getElementById('github').value   = data.github   || "";
+    document.getElementById('summary').value  = data.summary  || "";
+    document.getElementById('skills').value   = data.skills   || "";
+
+    // Rebuild education entries
+    const eduContainer = document.getElementById('educationContainer');
+    eduContainer.innerHTML = '';
+    (data.education || []).forEach(edu => {
+        window.addEducation();
+        const boxes = eduContainer.querySelectorAll('.entry-box');
+        const box   = boxes[boxes.length - 1];
+        box.querySelector('.eduInstitution').value = edu.institution || "";
+        box.querySelector('.eduDegree').value      = edu.degree      || "";
+        box.querySelector('.eduField').value       = edu.field       || "";
+        box.querySelector('.eduYear').value        = edu.year        || "";
+        box.querySelector('.eduDetails').value     = edu.details     || "";
+    });
+
+    // Rebuild experience entries
+    const expContainer = document.getElementById('experienceContainer');
+    expContainer.innerHTML = '';
+    (data.experience || []).forEach(exp => {
+        window.addExperience();
+        const boxes = expContainer.querySelectorAll('.entry-box');
+        const box   = boxes[boxes.length - 1];
+        box.querySelector('.expTitle').value   = exp.title   || "";
+        box.querySelector('.expCompany').value = exp.company || "";
+        box.querySelector('.expStart').value   = exp.start   || "";
+        box.querySelector('.expEnd').value     = exp.end     || "";
+        box.querySelector('.expDetails').value = exp.details || "";
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast("📂 Resume loaded! Update and click Preview & Save.");
+};
+
+// ── LOGOUT ──────────────────────────────────────────────────
+window.logout = function () {
+    signOut(auth)
+        .then(() => { window.location.href = "login.html"; })
+        .catch(err => { console.error("Logout error:", err); window.location.href = "login.html"; });
+};
+
+// ── TOAST HELPER ────────────────────────────────────────────
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => { toast.style.display = 'none'; }, 500);
+    }, 3500);
+}
 </script>
 
 </body>
