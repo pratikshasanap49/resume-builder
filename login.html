@@ -118,6 +118,31 @@
       text-decoration: underline;
     }
 
+    .forgot-password {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #1e3a8a;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .success-msg {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+      text-align: left;
+    }
+
     .back-home {
       display: inline-block;
       margin-top: 20px;
@@ -202,6 +227,7 @@
   <p class="subtitle">Sign in to continue building your resume</p>
 
   <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
 
   <div class="input-group">
     <label for="loginEmail">Email Address</label>
@@ -214,6 +240,7 @@
   </div>
 
   <button id="loginBtn">Sign In</button>
+  <a id="forgotPasswordBtn" class="forgot-password">Forgot Password?</a>
 
   <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
   <a href="index.html" class="back-home">← Back to Home</a>

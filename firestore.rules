@@ -6,6 +6,11 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Replace this with your real admin email before publishing rules.
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == "CHANGE_THIS_TO_YOUR_EMAIL@example.com";
+    }
+
     function isOwner() {
       return isSignedIn() && request.auth.uid == resource.data.userId;
     }
@@ -17,8 +22,8 @@ service cloud.firestore {
       // Owner can read, update, delete their own resume
       allow read, update, delete: if isOwner();
 
-      // Admin email can read and delete ANY resume (for admin.html)
-      allow read, delete: if isSignedIn() && request.auth.token.email != null;
+      // Admin can read and delete ANY resume (for admin.html)
+      allow read, delete: if isAdmin();
     }
 
   }

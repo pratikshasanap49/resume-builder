@@ -53,6 +53,17 @@ header span { font-size: 13px; opacity: .8; margin-left: 12px; }
 }
 .gate-btn:hover { background: #1e40af; }
 #loginError { color: #dc2626; font-size: 13px; margin-top: 10px; display: none; }
+.forgot-admin-password {
+    margin-top: 12px;
+    display: inline-block;
+    color: #1e3a8a;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+.forgot-admin-password:hover { text-decoration: underline; }
+#loginSuccess { color: #047857; font-size: 13px; margin-top: 10px; display: none; }
 
 /* ── Main content ── */
 #adminContent { display: none; }
@@ -258,7 +269,9 @@ tbody td { padding: 13px 16px; font-size: 13px; vertical-align: middle; }
     <input class="gate-input" type="email"    id="adminLoginEmail"    placeholder="Admin Email">
     <input class="gate-input" type="password" id="adminLoginPassword" placeholder="Password">
     <button class="gate-btn" onclick="adminLogin()">Login</button>
+    <a id="forgotAdminPasswordBtn" class="forgot-admin-password">Forgot Password?</a>
     <div id="loginError">Incorrect email or password.</div>
+    <div id="loginSuccess"></div>
 </div>
 
 <!-- ADMIN CONTENT -->
@@ -323,6 +336,7 @@ tbody td { padding: 13px 16px; font-size: 13px; vertical-align: middle; }
 import { initializeApp }                    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged,
          signInWithEmailAndPassword,
+         sendPasswordResetEmail,
          signOut }                          from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection,
          getDocs, deleteDoc, doc,
@@ -342,11 +356,21 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
+// Replace with your real admin email.
+const ADMIN_EMAIL = "pratikshasanap49@gmail.com";
+
 let allResumes = [];   // full cache for client-side search/filter
 
 // ── AUTH CHECK ─────────────────────────────────────────────
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        if (!user.email || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+            signOut(auth);
+            const errEl = document.getElementById('loginError');
+            errEl.style.display = 'block';
+            errEl.textContent = 'Access denied. This page is restricted to the website owner admin email.';
+            return;
+        }
         document.getElementById('loginGate').style.display    = 'none';
         document.getElementById('adminContent').style.display = 'block';
         document.getElementById('adminEmail').textContent     = user.email;
@@ -362,7 +386,14 @@ window.adminLogin = async function () {
     const email    = document.getElementById('adminLoginEmail').value.trim();
     const password = document.getElementById('adminLoginPassword').value;
     const errEl    = document.getElementById('loginError');
+    const okEl     = document.getElementById('loginSuccess');
     errEl.style.display = 'none';
+    okEl.style.display = 'none';
+    if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        errEl.style.display = 'block';
+        errEl.textContent = 'Only the configured admin email can login here.';
+        return;
+    }
     try {
         await signInWithEmailAndPassword(auth, email, password);
     } catch (e) {
@@ -372,6 +403,39 @@ window.adminLogin = async function () {
             : e.message;
     }
 };
+
+window.forgotAdminPassword = async function () {
+    const email = document.getElementById('adminLoginEmail').value.trim();
+    const errEl = document.getElementById('loginError');
+    const okEl  = document.getElementById('loginSuccess');
+    errEl.style.display = 'none';
+    okEl.style.display = 'none';
+
+    if (!email) {
+        errEl.style.display = 'block';
+        errEl.textContent = 'Enter admin email first, then click Forgot Password.';
+        return;
+    }
+    if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        errEl.style.display = 'block';
+        errEl.textContent = 'Password reset is allowed only for configured admin email.';
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        okEl.style.display = 'block';
+        okEl.textContent = 'Password reset link sent. Check your email inbox to set a new password.';
+    } catch (e) {
+        errEl.style.display = 'block';
+        errEl.textContent = e.message;
+    }
+};
+
+const forgotAdminPasswordBtn = document.getElementById('forgotAdminPasswordBtn');
+if (forgotAdminPasswordBtn) {
+    forgotAdminPasswordBtn.addEventListener('click', window.forgotAdminPassword);
+}
 
 window.adminLogout = function () {
     signOut(auth).then(() => window.location.reload());
