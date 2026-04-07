@@ -534,7 +534,7 @@ window.viewResume = function (id) {
 
     document.getElementById('modalTitle').textContent = `${r.name || 'Unnamed'} — Resume Detail`;
 
-    const skills = (r.skills || '').split(',').map(s => s.trim()).filter(Boolean);
+    const skills = (r.skills || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
     const skillHtml = skills.length
         ? `<div class="skill-list">${skills.map(s => `<span class="skill-tag">${escHtml(s)}</span>`).join('')}</div>`
         : '<span style="color:#9ca3af;">—</span>';

@@ -270,6 +270,13 @@ textarea { resize: vertical; }
     border-radius: 12px;
 }
 
+.resume-card p,
+.resume-card div,
+.resume-card span {
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
 .resume-header {
     display:flex;
     align-items:center;
@@ -313,6 +320,19 @@ textarea { resize: vertical; }
     border-left:3px solid currentColor;
     background:rgba(255,255,255,0.55);
     border-radius:8px;
+}
+
+.resume-text-block {
+    white-space:pre-wrap;
+}
+
+.resume-skills-list {
+    margin:0;
+    padding-left:22px;
+}
+
+.resume-skills-list li {
+    margin-bottom:6px;
 }
 
 .required { color:red; }
@@ -917,7 +937,7 @@ textarea { resize: vertical; }
 <h3>Skills <span class="required">*</span></h3>
 </div>
 <div class="input-group">
-<input type="text" id="skills">
+<textarea id="skills" rows="5" placeholder="Enter one skill per line or separate skills with commas"></textarea>
 </div>
 </div>
 
@@ -1005,7 +1025,7 @@ img.style.display = 'none';
 function generateSummary(){
     const name = document.getElementById('name').value.trim() || "This professional";
     const skillsRaw = document.getElementById('skills').value.trim();
-    const skillsList = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const skillsList = parseSkills(skillsRaw);
     const isFresher = document.getElementById('isFresher').checked;
 
     // Collect experience data
@@ -1166,6 +1186,22 @@ addButton.style.opacity = isFresher ? '0.6' : '1';
 addButton.textContent = isFresher ? 'Fresher selected' : '+ Add Experience';
 }
 
+function parseSkills(skillsValue) {
+return (skillsValue || '')
+    .split(/[\n,]+/)
+    .map(skill => skill.trim())
+    .filter(Boolean);
+}
+
+function escapeHtml(value) {
+return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Helper function to read file as base64
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
@@ -1196,6 +1232,7 @@ const userLinkedin = document.getElementById('linkedin').value;
 const userGithub = document.getElementById('github').value;
 const userSummary = document.getElementById('summary').value;
 const userSkills = document.getElementById('skills').value;
+const userSkillsList = parseSkills(userSkills);
 const isFresher = document.getElementById('isFresher').checked;
 
 // Get profile photo
@@ -1267,6 +1304,10 @@ const experienceSectionHtml = isFresher
     ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3><p class="resume-empty-note">Fresher - ready to begin a professional career and build hands-on experience.</p>`
     : (expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3>${expHtml}` : "");
 
+const skillsSectionHtml = userSkillsList.length
+    ? `<ul class="resume-skills-list">${userSkillsList.map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>`
+    : `<p class="resume-empty-note">No skills added yet.</p>`;
+
 document.getElementById('resumePreview').innerHTML = `
 <div class="resume-card" style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
 <div class="resume-header">
@@ -1283,9 +1324,10 @@ ${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : 
 </div>
 </div>
 </div>
-<p><b>Skills:</b> ${userSkills}</p>
+<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Skills</h3>
+${skillsSectionHtml}
 <h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Professional Summary</h3>
-<p>${userSummary}</p>
+<p class="resume-text-block">${userSummary}</p>
 <h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Education</h3>
 ${educationHtml}
 ${experienceSectionHtml}
@@ -1463,7 +1505,7 @@ async function loadSavedResumes() {
             <div class="saved-resume-card">
                 <div class="resume-meta">
                     <h4>${data.name || 'Unnamed Resume'}</h4>
-                    <span>📅 ${date} &nbsp;|&nbsp; 🎨 ${data.template || 'Default'} &nbsp;|&nbsp; 🛠 ${(data.skills || '').split(',').slice(0,3).join(', ') || 'No skills listed'}</span>
+                    <span>📅 ${date} &nbsp;|&nbsp; 🎨 ${data.template || 'Default'} &nbsp;|&nbsp; 🛠 ${parseSkills(data.skills || '').slice(0,3).join(', ') || 'No skills listed'}</span>
                 </div>
                 <div class="saved-resume-actions">
                     <button class="load-btn" onclick="window.loadResumeData('${data.id}')">📂 Load</button>
