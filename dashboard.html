@@ -231,7 +231,88 @@ textarea { resize: vertical; }
     width:120px;
     height:120px;
     object-fit:cover;
+    object-position: center;
     border-radius:50%;
+    display:block;
+    margin-top:12px;
+    border:4px solid #e5e7eb;
+    background:#f8fafc;
+}
+
+.fresher-toggle {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+    padding:12px 14px;
+    border:1px solid #dbeafe;
+    border-radius:12px;
+    background:#eff6ff;
+}
+
+.fresher-toggle input {
+    width:auto;
+}
+
+.fresher-toggle label {
+    margin:0;
+    font-weight:600;
+    color:#1e3a8a;
+}
+
+.experience-disabled {
+    opacity:0.55;
+    pointer-events:none;
+}
+
+.resume-card {
+    font-family: inherit;
+    border-radius: 12px;
+}
+
+.resume-header {
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:24px;
+}
+
+.resume-header-content {
+    flex:1;
+    min-width:0;
+}
+
+.resume-profile-photo {
+    width:140px;
+    height:140px;
+    flex:0 0 140px;
+    object-fit:cover;
+    object-position:center;
+    border-radius:20px;
+    border:4px solid rgba(255,255,255,0.85);
+    background:#fff;
+    box-shadow:0 10px 24px rgba(15, 23, 42, 0.14);
+    display:block;
+}
+
+.resume-contact-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:10px 18px;
+    margin-top:14px;
+}
+
+.resume-line-item {
+    margin:0;
+    overflow-wrap:anywhere;
+}
+
+.resume-empty-note {
+    margin:0;
+    padding:12px 14px;
+    border-left:3px solid currentColor;
+    background:rgba(255,255,255,0.55);
+    border-radius:8px;
 }
 
 .required { color:red; }
@@ -421,6 +502,17 @@ textarea { resize: vertical; }
     .profile-preview {
         width: 100px;
         height: 100px;
+    }
+
+    .resume-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .resume-profile-photo {
+        width: 110px;
+        height: 110px;
+        flex-basis: 110px;
     }
 
     .resume-preview {
@@ -778,14 +870,20 @@ textarea { resize: vertical; }
 <input type="number" id="age">
 </div>
 <div class="column input-group">
-<label>Phone <span class="required">*</span></label>
-<input type="text" id="phone">
+<label>Email <span class="required">*</span></label>
+<input type="email" id="email">
 </div>
 </div>
 
-<div class="input-group">
+<div class="two-column">
+<div class="column input-group">
+<label>Phone <span class="required">*</span></label>
+<input type="text" id="phone">
+</div>
+<div class="column input-group">
 <label>Address <span class="required">*</span></label>
 <input type="text" id="address">
+</div>
 </div>
 
 <div class="two-column">
@@ -829,8 +927,12 @@ textarea { resize: vertical; }
 <div class="circle">5</div>
 <h3>Work Experience</h3>
 </div>
+<div class="fresher-toggle">
+<input type="checkbox" id="isFresher" onchange="toggleFresherMode()">
+<label for="isFresher">I am a fresher / I have no work experience yet</label>
+</div>
 <div id="experienceContainer"></div>
-<button class="dashed-btn" onclick="addExperience()">+ Add Experience</button>
+<button class="dashed-btn" id="addExperienceBtn" onclick="addExperience()">+ Add Experience</button>
 </div>
 
 <!-- EDUCATION -->
@@ -885,14 +987,17 @@ textarea { resize: vertical; }
 // PHOTO PREVIEW
 document.getElementById('profilePhoto').addEventListener('change', function(e){
 const file = e.target.files[0];
+const img = document.getElementById('profilePreview');
 if(file){
 const reader = new FileReader();
 reader.onload = function(evt){
-const img = document.getElementById('profilePreview');
 img.src = evt.target.result;
 img.style.display = 'block';
 };
 reader.readAsDataURL(file);
+} else {
+img.removeAttribute('src');
+img.style.display = 'none';
 }
 });
 
@@ -901,6 +1006,7 @@ function generateSummary(){
     const name = document.getElementById('name').value.trim() || "This professional";
     const skillsRaw = document.getElementById('skills').value.trim();
     const skillsList = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const isFresher = document.getElementById('isFresher').checked;
 
     // Collect experience data
     const expTitleEls = document.querySelectorAll('.expTitle');
@@ -912,7 +1018,7 @@ function generateSummary(){
         const start  = document.querySelectorAll('.expStart')[i]?.value.trim()  || "";
         const end    = document.querySelectorAll('.expEnd')[i]?.value.trim()    || "";
         const details = document.querySelectorAll('.expDetails')[i]?.value.trim() || "";
-        if (title || company) roles.push({ title, company, start, end, details });
+        if (!isFresher && (title || company)) roles.push({ title, company, start, end, details });
         if (details) expAchievements.push(details);
     }
 
@@ -955,7 +1061,9 @@ function generateSummary(){
     }
 
     // 3. Professional experience
-    if (roles.length === 1) {
+    if (isFresher && roles.length === 0) {
+        parts.push("An enthusiastic fresher with a strong academic foundation, hands-on project exposure, and a clear focus on building professional experience.");
+    } else if (roles.length === 1) {
         let expPart = `Professionally experienced as ${roles[0].title || "a professional"}`;
         if (roles[0].company) expPart += ` at ${roles[0].company}`;
         if (roles[0].start)   expPart += ` (${roles[0].start}${roles[0].end ? " – " + roles[0].end : " – Present"})`;
@@ -966,7 +1074,7 @@ function generateSummary(){
     }
 
     // 4. Work achievements & responsibilities
-    if (expAchievements.length > 0) {
+    if (!isFresher && expAchievements.length > 0) {
         let achPart = "Professional highlights and key achievements include: ";
         achPart += expAchievements.map(a => a.length > 180 ? a.substring(0, 177) + "..." : a).join(". Furthermore, ");
         if (!achPart.endsWith('.')) achPart += ".";
@@ -1047,6 +1155,17 @@ div.innerHTML = `
 container.appendChild(div);
 }
 
+function toggleFresherMode() {
+const isFresher = document.getElementById('isFresher').checked;
+const container = document.getElementById('experienceContainer');
+const addButton = document.getElementById('addExperienceBtn');
+
+container.classList.toggle('experience-disabled', isFresher);
+addButton.disabled = isFresher;
+addButton.style.opacity = isFresher ? '0.6' : '1';
+addButton.textContent = isFresher ? 'Fresher selected' : '+ Add Experience';
+}
+
 // Helper function to read file as base64
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
@@ -1070,12 +1189,14 @@ const bgColor = selectedTemplate.bgColor;
 
 const userName = document.getElementById('name').value;
 const userAge = document.getElementById('age').value;
+const userEmail = document.getElementById('email').value;
 const userPhone = document.getElementById('phone').value;
 const userAddress = document.getElementById('address').value;
 const userLinkedin = document.getElementById('linkedin').value;
 const userGithub = document.getElementById('github').value;
 const userSummary = document.getElementById('summary').value;
 const userSkills = document.getElementById('skills').value;
+const isFresher = document.getElementById('isFresher').checked;
 
 // Get profile photo
 const profilePhotoFile = document.getElementById('profilePhoto').files[0];
@@ -1083,7 +1204,7 @@ let profilePhotoHtml = "";
 if (profilePhotoFile) {
     const profilePhotoData = await readFileAsDataURL(profilePhotoFile);
     if (profilePhotoData) {
-        profilePhotoHtml = `<img src="${profilePhotoData}" style="width:120px; height:120px; object-fit:cover; border-radius:50%; margin-bottom:15px;">`;
+        profilePhotoHtml = `<img src="${profilePhotoData}" alt="Profile photo" class="resume-profile-photo">`;
     }
 }
 
@@ -1125,7 +1246,7 @@ for (let i = 0; i < expTitles.length; i++) {
     const details = document.querySelectorAll('.expDetails')[i]?.value || "";
     const file = document.querySelectorAll('.expLetter')[i]?.files[0];
     
-    if(title.value || comp){
+    if(!isFresher && (title.value || comp)){
         expHtml += `<div style="margin-bottom:15px; padding:10px; border-left:3px solid ${color};">`;
         expHtml += `<p><b>${title.value}</b> - ${comp}</p>`;
         if(start || end) expHtml += `<p>${start} - ${end}</p>`;
@@ -1142,20 +1263,32 @@ for (let i = 0; i < expTitles.length; i++) {
     }
 }
 
+const experienceSectionHtml = isFresher
+    ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3><p class="resume-empty-note">Fresher - ready to begin a professional career and build hands-on experience.</p>`
+    : (expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3>${expHtml}` : "");
+
 document.getElementById('resumePreview').innerHTML = `
-<div style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
+<div class="resume-card" style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
+<div class="resume-header">
 ${profilePhotoHtml}
+<div class="resume-header-content">
 <h2 style="color:${color}; margin-bottom: 10px;">${userName}</h2>
-<p><b>Age:</b> ${userAge} | <b>Phone:</b> ${userPhone}</p>
-<p><b>Address:</b> ${userAddress}</p>
-${userLinkedin ? `<p><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
-${userGithub ? `<p><b>GitHub:</b> ${userGithub}</p>` : ""}
+<div class="resume-contact-grid">
+<p class="resume-line-item"><b>Age:</b> ${userAge}</p>
+<p class="resume-line-item"><b>Email:</b> ${userEmail}</p>
+<p class="resume-line-item"><b>Phone:</b> ${userPhone}</p>
+<p class="resume-line-item"><b>Address:</b> ${userAddress}</p>
+${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
+${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
+</div>
+</div>
+</div>
 <p><b>Skills:</b> ${userSkills}</p>
 <h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Professional Summary</h3>
 <p>${userSummary}</p>
 <h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Education</h3>
 ${educationHtml}
-${expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3>${expHtml}` : ""}
+${experienceSectionHtml}
 </div>
 `;
 
@@ -1275,6 +1408,7 @@ window.saveResumeToFirestore = async function () {
     const resumeData = {
         name:        document.getElementById('name').value        || "",
         age:         document.getElementById('age').value         || "",
+        email:       document.getElementById('email').value       || "",
         phone:       document.getElementById('phone').value       || "",
         address:     document.getElementById('address').value     || "",
         linkedin:    document.getElementById('linkedin').value    || "",
@@ -1284,6 +1418,7 @@ window.saveResumeToFirestore = async function () {
         template:    document.getElementById('template').value    || "modern-blue",
         education:   educations,
         experience:  experiences,
+        isFresher:   document.getElementById('isFresher').checked,
         userId:      currentUserId,
         userEmail:   currentUserEmail,
         createdAt:   new Date().toISOString()
@@ -1363,12 +1498,15 @@ window.loadResumeData = function (id) {
 
     document.getElementById('name').value    = data.name    || "";
     document.getElementById('age').value     = data.age     || "";
+    document.getElementById('email').value   = data.email   || "";
     document.getElementById('phone').value   = data.phone   || "";
     document.getElementById('address').value = data.address || "";
     document.getElementById('linkedin').value = data.linkedin || "";
     document.getElementById('github').value   = data.github   || "";
     document.getElementById('summary').value  = data.summary  || "";
     document.getElementById('skills').value   = data.skills   || "";
+    document.getElementById('isFresher').checked = Boolean(data.isFresher);
+    toggleFresherMode();
 
     // Rebuild education entries
     const eduContainer = document.getElementById('educationContainer');
@@ -1401,6 +1539,8 @@ window.loadResumeData = function (id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast("📂 Resume loaded! Update and click Preview & Save.");
 };
+
+    toggleFresherMode();
 
 // ── LOGOUT ──────────────────────────────────────────────────
 window.logout = function () {

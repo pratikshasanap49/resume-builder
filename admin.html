@@ -512,7 +512,7 @@ window.filterTable = function () {
     const now       = new Date();
 
     let filtered = allResumes.filter(r => {
-        const haystack = [r.name, r.userEmail, r.skills, r.template, r.address].join(' ').toLowerCase();
+        const haystack = [r.name, r.email, r.userEmail, r.skills, r.template, r.address].join(' ').toLowerCase();
         if (q && !haystack.includes(q)) return false;
 
         if (dateRange !== 'all' && r.createdAt) {
@@ -546,7 +546,9 @@ window.viewResume = function (id) {
             ${e.details ? `<br><span style="color:#374151;">${escHtml(e.details)}</span>` : ''}
         </div>`).join('') || '<p style="color:#9ca3af;font-size:13px;">No education added.</p>';
 
-    const expHtml = (r.experience || []).map(e => `
+    const expHtml = r.isFresher
+        ? '<p style="color:#1e3a8a;font-size:13px;font-weight:600;">Fresher / no prior work experience added.</p>'
+        : (r.experience || []).map(e => `
         <div class="entry-item">
             <b>${escHtml(e.title || '—')}</b> at ${escHtml(e.company || '—')}
             ${(e.start || e.end) ? `<br><span style="color:#6b7280;font-size:12px;">📅 ${escHtml(e.start || '')} – ${escHtml(e.end || 'Present')}</span>` : ''}
@@ -560,10 +562,11 @@ window.viewResume = function (id) {
     document.getElementById('modalBody').innerHTML = `
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div class="modal-field"><label>Full Name</label><div class="val">${escHtml(r.name || '—')}</div></div>
-            <div class="modal-field"><label>Email</label><div class="val">${escHtml(r.userEmail || '—')}</div></div>
+            <div class="modal-field"><label>Resume Email</label><div class="val">${escHtml(r.email || '—')}</div></div>
             <div class="modal-field"><label>Phone</label><div class="val">${escHtml(r.phone || '—')}</div></div>
             <div class="modal-field"><label>Age</label><div class="val">${escHtml(r.age || '—')}</div></div>
             <div class="modal-field" style="grid-column:1/-1;"><label>Address</label><div class="val">${escHtml(r.address || '—')}</div></div>
+            <div class="modal-field"><label>Account Email</label><div class="val">${escHtml(r.userEmail || '—')}</div></div>
             ${r.linkedin ? `<div class="modal-field"><label>LinkedIn</label><div class="val">${escHtml(r.linkedin)}</div></div>` : ''}
             ${r.github   ? `<div class="modal-field"><label>GitHub</label><div class="val">${escHtml(r.github)}</div></div>`   : ''}
             <div class="modal-field"><label>Template</label><div class="val"><span class="badge">${escHtml(r.template || 'default')}</span></div></div>
