@@ -1404,10 +1404,20 @@ textarea { resize: vertical; }
 </div>
 </div>
 
-<!-- EXPERIENCE -->
+<!-- EDUCATION -->
 <div class="section-card">
 <div class="section-header">
 <div class="circle">5</div>
+<h3>Education <span class="required">*</span></h3>
+</div>
+<div id="educationContainer"></div>
+<button class="dashed-btn" onclick="addEducation()">+ Add Education</button>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">6</div>
 <h3>Work Experience</h3>
 </div>
 <div class="fresher-toggle">
@@ -1416,16 +1426,6 @@ textarea { resize: vertical; }
 </div>
 <div id="experienceContainer"></div>
 <button class="dashed-btn" id="addExperienceBtn" onclick="addExperience()">+ Add Experience</button>
-</div>
-
-<!-- EDUCATION -->
-<div class="section-card">
-<div class="section-header">
-<div class="circle">6</div>
-<h3>Education <span class="required">*</span></h3>
-</div>
-<div id="educationContainer"></div>
-<button class="dashed-btn" onclick="addEducation()">+ Add Education</button>
 </div>
 
 <!-- DOWNLOAD SETTINGS -->
@@ -1977,26 +1977,49 @@ function buildPdfFromCanvas(canvas, paperSize, quality, scaleFactor) {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', paperSize);
     const renderCanvas = createScaledCanvas(canvas, scaleFactor);
-    const imgData = renderCanvas.toDataURL('image/jpeg', quality);
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 10;
+    const usableWidth = pageWidth - (margin * 2);
     const usableHeight = pageHeight - (margin * 2);
     const imgWidth = pageWidth - (margin * 2);
-    const imgHeight = renderCanvas.height * imgWidth / renderCanvas.width;
+    const pxPerMm = renderCanvas.width / usableWidth;
+    const pageSlicePx = Math.max(1, Math.floor(usableHeight * pxPerMm));
 
-    let heightLeft = imgHeight;
-    let position = margin;
+    let startY = 0;
+    let pageIndex = 0;
 
-    pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
-    heightLeft -= usableHeight;
+    while (startY < renderCanvas.height) {
+        const sliceHeightPx = Math.min(pageSlicePx, renderCanvas.height - startY);
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = renderCanvas.width;
+        sliceCanvas.height = sliceHeightPx;
 
-    while (heightLeft > 0) {
-        pdf.addPage();
-        position = margin - (imgHeight - heightLeft);
-        pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
-        heightLeft -= usableHeight;
+        const sliceCtx = sliceCanvas.getContext('2d');
+        sliceCtx.drawImage(
+            renderCanvas,
+            0,
+            startY,
+            renderCanvas.width,
+            sliceHeightPx,
+            0,
+            0,
+            renderCanvas.width,
+            sliceHeightPx
+        );
+
+        const sliceData = sliceCanvas.toDataURL('image/jpeg', quality);
+        const sliceHeightMm = sliceHeightPx / pxPerMm;
+
+        if (pageIndex > 0) {
+            pdf.addPage();
+        }
+
+        pdf.addImage(sliceData, 'JPEG', margin, margin, imgWidth, sliceHeightMm, undefined, 'FAST');
+
+        startY += sliceHeightPx;
+        pageIndex += 1;
     }
 
     return pdf;
@@ -2214,12 +2237,12 @@ function buildTwoColumnLayout(data, sidebarBg, sidebarText, cardBg) {
     <p class="resume-text-block">${userSummary}</p>
     </div>
     <div class="resume-section">
-    ${makeSectionTitle('Experience', color, true)}
-    ${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}
-    </div>
-    <div class="resume-section">
     ${makeSectionTitle('Education', color, true)}
     ${educationHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Experience', color, true)}
+    ${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}
     </div>
     </section>
     </div>
@@ -2258,10 +2281,6 @@ function buildTimelineLayout(data, cardBg) {
     ${makeSectionTitle('Profile', color, true)}
     <p class="resume-text-block">${userSummary}</p>
     </div>
-    <div class="resume-section" style="color:${color};">
-    ${makeSectionTitle('Career Timeline', color, true)}
-    ${timelineExp}
-    </div>
     <div class="resume-section">
     ${makeSectionTitle('Skills', color, true)}
     ${skillsSectionHtml}
@@ -2269,6 +2288,10 @@ function buildTimelineLayout(data, cardBg) {
     <div class="resume-section">
     ${makeSectionTitle('Education', color, true)}
     ${educationHtml}
+    </div>
+    <div class="resume-section" style="color:${color};">
+    ${makeSectionTitle('Career Timeline', color, true)}
+    ${timelineExp}
     </div>
     <div class="resume-section">
     ${makeSectionTitle('Attached Documents', color, true)}
@@ -2297,8 +2320,8 @@ function buildEditorialLayout(data, cardBg, accent2) {
     <div class="canva-layout-grid" style="grid-template-columns:minmax(0,1fr) minmax(220px,32%); margin-top:14px;">
     <section class="canva-layout-main">
     <div class="resume-section">${makeSectionTitle('Professional Summary', color, true)}<p class="resume-text-block">${userSummary}</p></div>
-    <div class="resume-section">${makeSectionTitle('Experience', color, true)}${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}</div>
     <div class="resume-section">${makeSectionTitle('Education', color, true)}${educationHtml}</div>
+    <div class="resume-section">${makeSectionTitle('Experience', color, true)}${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}</div>
     </section>
     <aside class="canva-layout-side" style="background:#fff; border:1px dashed ${accent2}; color:#1f2937;">
     <div class="resume-section">${makeSectionTitle('Skills', color, true)}${skillsSectionHtml}</div>
@@ -2382,13 +2405,13 @@ function buildPhotoRightLayout(data) {
             <p class="resume-text-block" style="margin:0; color:#374151;">${userSummary}</p>
           </div>
           <div style="margin-bottom:18px;">
-            ${sectionH('Experience')}
-            ${bodyExpHtml || '<p class="resume-empty-note">No experience added yet.</p>'}
-          </div>
-          <div>
             ${sectionH('Education')}
             ${educationHtml || '<p class="resume-empty-note">No education added yet.</p>'}
           </div>
+                    <div style="margin-top:18px;">
+                        ${sectionH('Experience')}
+                        ${bodyExpHtml || '<p class="resume-empty-note">No experience added yet.</p>'}
+                    </div>
         </section>
 
       </div>
