@@ -77,19 +77,42 @@ if (loginBtn) {
 // FORGOT PASSWORD (USER LOGIN)
 const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 if (forgotPasswordBtn) {
-  forgotPasswordBtn.addEventListener("click", () => {
+  forgotPasswordBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
     const email = document.getElementById("loginEmail")?.value?.trim();
     if (!email) {
       showError("Enter your email first, then click Forgot Password.");
       return;
     }
 
-    sendPasswordResetEmail(auth, email)
+    // Use an explicit redirect target after password reset for better reliability.
+    const actionCodeSettings = {
+      url: `${window.location.origin}/login.html`,
+      handleCodeInApp: false,
+    };
+
+    sendPasswordResetEmail(auth, email, actionCodeSettings)
       .then(() => {
         showSuccess("Password reset link sent to your email. Open your inbox and set a new password.");
       })
       .catch((error) => {
-        showError(error.message);
+        let message = error.message;
+
+        if (error.code === "auth/invalid-email") {
+          message = "Please enter a valid email address.";
+        } else if (error.code === "auth/missing-continue-uri" || error.code === "auth/invalid-continue-uri") {
+          message = "Reset link configuration is invalid. Add your site domain in Firebase Auth > Settings > Authorized domains.";
+        } else if (error.code === "auth/unauthorized-continue-uri") {
+          message = "This domain is not authorized in Firebase. Add your domain in Firebase Auth > Settings > Authorized domains.";
+        } else if (error.code === "auth/network-request-failed") {
+          message = "Network error while sending reset email. Check internet and try again.";
+        } else if (window.location.protocol === "file:") {
+          message = "Open this app through a local server (http://localhost), not as a file path, then try again.";
+        }
+
+        showError(message);
+        console.error("Forgot password error:", error.code, error.message);
       });
   });
 }

@@ -25,6 +25,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -326,6 +331,136 @@ textarea { resize: vertical; }
     white-space:pre-wrap;
 }
 
+.preview-edit-tools {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    background: #f8fbff;
+}
+
+.preview-edit-tools h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #1e3a8a;
+}
+
+.preview-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+}
+
+.preview-edit-item label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 4px;
+}
+
+.preview-edit-item input[type="range"] {
+    width: 100%;
+}
+
+.preview-edit-value {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.preview-edit-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.mini-btn {
+    border: 1px solid #bfdbfe;
+    background: #ffffff;
+    color: #1e3a8a;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.mini-btn:hover {
+    background: #eff6ff;
+}
+
+.word-toolbar {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.word-toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.word-toolbar-row:last-child {
+    margin-bottom: 0;
+}
+
+.word-btn {
+    min-width: 34px;
+    height: 34px;
+    border: 1px solid #bfdbfe;
+    background: #f8fbff;
+    color: #0f172a;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0 8px;
+}
+
+.word-btn:hover {
+    background: #eaf3ff;
+}
+
+.word-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.word-select,
+.word-color {
+    height: 34px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #fff;
+    padding: 0 8px;
+}
+
+.word-select:disabled,
+.word-color:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.doc-note {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.resume-edit-mode {
+    outline: 2px dashed #3b82f6;
+    outline-offset: 5px;
+}
+
+.resume-edit-mode [contenteditable="true"] {
+    cursor: text;
+}
+
 .resume-skills-list {
     margin:0;
     padding-left:22px;
@@ -333,6 +468,54 @@ textarea { resize: vertical; }
 
 .resume-skills-list li {
     margin-bottom:6px;
+}
+
+.canva-layout-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 30%) minmax(0, 1fr);
+    gap: 22px;
+}
+
+.canva-layout-main,
+.canva-layout-side {
+    min-width: 0;
+}
+
+.canva-layout-side {
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.canva-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.canva-chip {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.canva-timeline-item {
+    position: relative;
+    margin-bottom: 14px;
+    padding-left: 16px;
+    border-left: 2px solid currentColor;
+}
+
+.canva-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
 }
 
 .required { color:red; }
@@ -399,6 +582,18 @@ textarea { resize: vertical; }
 .template-card .template-font {
     font-size: 10px;
     color: #666;
+}
+
+.template-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1e3a8a;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
 }
 
 /* RESPONSIVE STYLES */
@@ -538,6 +733,14 @@ textarea { resize: vertical; }
     .resume-preview {
         padding: 15px;
         overflow-x: auto;
+    }
+
+    .canva-layout-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-edit-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -863,6 +1066,266 @@ textarea { resize: vertical; }
 <div class="template-font">Fira Sans</div>
 </div>
 
+<!-- Template 21 -->
+<div class="template-card" onclick="selectTemplate('canva-editorial', 'Cormorant Garamond', '#7a3a2f', '#fffaf7')">
+<div class="template-preview" style="background: radial-gradient(circle at top left, #fde7df 0%, #f7c9b8 40%, #e89f8b 100%); color: #442016; font-family: 'Cormorant Garamond';">
+<div class="preview-name" style="letter-spacing:0.4px;">JANE DOE</div>
+<div class="preview-text">Editorial Manager</div>
+</div>
+<div class="template-name">Canva Editorial Luxe</div>
+<div class="template-font">Cormorant Garamond</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 22 -->
+<div class="template-card" onclick="selectTemplate('canva-neo-corp', 'Plus Jakarta Sans', '#0b4f71', '#f5fbff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #071f33 0%, #0b4f71 50%, #2f88b8 100%); color: #f8fcff; font-family: 'Plus Jakarta Sans';">
+<div class="preview-name" style="font-weight:800;">ALEX KHAN</div>
+<div class="preview-text">Product Strategist</div>
+</div>
+<div class="template-name">Canva Neo Corporate</div>
+<div class="template-font">Plus Jakarta Sans</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 23 -->
+<div class="template-card" onclick="selectTemplate('canva-terra', 'DM Sans', '#7a4b2f', '#fff7ef')">
+<div class="template-preview" style="background: linear-gradient(140deg, #5a3423 0%, #a46a47 45%, #deb890 100%); color: #fff8f3; font-family: 'DM Sans';">
+<div class="preview-name">Riya Sharma</div>
+<div class="preview-text">Marketing Lead</div>
+</div>
+<div class="template-name">Canva Terra Professional</div>
+<div class="template-font">DM Sans</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 24 -->
+<div class="template-card" onclick="selectTemplate('canva-glass', 'Manrope', '#0f172a', '#f8fafc')">
+<div class="template-preview" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.78)); color: #f8fafc; font-family: 'Manrope'; border:1px solid rgba(255,255,255,0.35); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);">
+<div class="preview-name" style="font-weight:800;">Samuel Lee</div>
+<div class="preview-text">Data Analyst</div>
+</div>
+<div class="template-name">Canva Glass Executive</div>
+<div class="template-font">Manrope</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 25 -->
+<div class="template-card" onclick="selectTemplate('canva-swiss', 'Space Grotesk', '#1f2937', '#fafafa')">
+<div class="template-preview" style="background: linear-gradient(145deg, #111827 0%, #374151 60%, #9ca3af 100%); color: #f9fafb; font-family: 'Space Grotesk';">
+<div class="preview-name">NOAH PEREZ</div>
+<div class="preview-text">UX Designer</div>
+</div>
+<div class="template-name">Canva Swiss Minimal</div>
+<div class="template-font">Space Grotesk</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 26 -->
+<div class="template-card" onclick="selectTemplate('canva-sage', 'Manrope', '#25614f', '#f3fbf8')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1c4f43 0%, #2f7d6a 45%, #83bfae 100%); color: #effcf7; font-family: 'Manrope';">
+<div class="preview-name">Meera Patel</div>
+<div class="preview-text">Operations Manager</div>
+</div>
+<div class="template-name">Canva Sage Profile</div>
+<div class="template-font">Manrope</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 27 -->
+<div class="template-card" onclick="selectTemplate('canva-cobalt', 'Plus Jakarta Sans', '#1d4ed8', '#eff6ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 55%, #60a5fa 100%); color: #eff6ff; font-family: 'Plus Jakarta Sans';">
+<div class="preview-name" style="font-weight:700;">Priya Nair</div>
+<div class="preview-text">Business Consultant</div>
+</div>
+<div class="template-name">Canva Cobalt Pitch</div>
+<div class="template-font">Plus Jakarta Sans</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 28 -->
+<div class="template-card" onclick="selectTemplate('canva-night-gold', 'DM Sans', '#8a5a17', '#fffaf0')">
+<div class="template-preview" style="background: linear-gradient(135deg, #0b1220 0%, #1f2937 58%, #8a5a17 100%); color: #fef7e2; font-family: 'DM Sans';">
+<div class="preview-name" style="font-weight:700;">Aarav Gupta</div>
+<div class="preview-text">Finance Specialist</div>
+</div>
+<div class="template-name">Canva Night Gold</div>
+<div class="template-font">DM Sans</div>
+<div class="template-tag">Canva Pro</div>
+</div>
+
+<!-- Template 29: Generic Modern Canva Style — photo-right, light blue -->
+<div class="template-card" onclick="selectTemplate('generic-modern-canva-style', 'Manrope', '#1d4ed8', '#f4f8ff')">
+<div class="template-preview" style="background:#eaf3ff; color:#1d4ed8; font-family:'Manrope'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#1d4ed8;">JOHN DOE</div>
+    <div class="preview-text" style="color:#475569;">Software Engineer</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#1d4ed8; opacity:0.25;"></div>
+</div>
+<div class="template-name">Generic Modern Canva Style</div>
+<div class="template-font">Manrope</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 30: Two Column Professional Resume — photo-right, steel blue -->
+<div class="template-card" onclick="selectTemplate('two-column-professional-resume', 'Plus Jakarta Sans', '#0f4c81', '#f7fbff')">
+<div class="template-preview" style="background:#dbeafe; color:#0f4c81; font-family:'Plus Jakarta Sans'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#0f4c81;">ALEX KHAN</div>
+    <div class="preview-text" style="color:#1e40af;">Business Consultant</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#0f4c81; opacity:0.25;"></div>
+</div>
+<div class="template-name">Two Column Professional Resume</div>
+<div class="template-font">Plus Jakarta Sans</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 39: Canva Photo Right Modern — photo-right, light lavender -->
+<div class="template-card" onclick="selectTemplate('canva-photo-right-modern', 'DM Sans', '#5b21b6', '#f8f4ff')">
+<div class="template-preview" style="background:#ede9fe; color:#5b21b6; font-family:'DM Sans'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#5b21b6;">SARAH LIM</div>
+    <div class="preview-text" style="color:#6d28d9;">Product Manager</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#5b21b6; opacity:0.25;"></div>
+</div>
+<div class="template-name">Canva Photo Right Modern</div>
+<div class="template-font">DM Sans</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 40: Canva Clean Light Split — photo-right, sage green -->
+<div class="template-card" onclick="selectTemplate('canva-clean-light-split', 'Poppins', '#065f46', '#f0fdf4')">
+<div class="template-preview" style="background:#d1fae5; color:#065f46; font-family:'Poppins'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#065f46;">MEERA PATEL</div>
+    <div class="preview-text" style="color:#047857;">Operations Lead</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#065f46; opacity:0.25;"></div>
+</div>
+<div class="template-name">Canva Clean Light Split</div>
+<div class="template-font">Poppins</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 41: Canva Pro Light Photo — photo-right, warm rose -->
+<div class="template-card" onclick="selectTemplate('canva-pro-light-photo', 'Montserrat', '#9f1239', '#fff1f2')">
+<div class="template-preview" style="background:#fce7f3; color:#9f1239; font-family:'Montserrat'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#9f1239;">JESSICA T.</div>
+    <div class="preview-text" style="color:#be123c;">Brand Strategist</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#9f1239; opacity:0.25;"></div>
+</div>
+<div class="template-name">Canva Pro Light Photo</div>
+<div class="template-font">Montserrat</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 42: Canva Light Column Photo — photo-right, amber -->
+<div class="template-card" onclick="selectTemplate('canva-light-column-photo', 'Work Sans', '#92400e', '#fffbeb')">
+<div class="template-preview" style="background:#fef3c7; color:#92400e; font-family:'Work Sans'; display:flex; align-items:center; justify-content:space-between; padding:10px;">
+  <div>
+    <div class="preview-name" style="font-weight:800; font-size:15px; color:#92400e;">AARAV SHAH</div>
+    <div class="preview-text" style="color:#b45309;">Finance Analyst</div>
+  </div>
+  <div style="width:34px; height:34px; border-radius:6px; background:#92400e; opacity:0.25;"></div>
+</div>
+<div class="template-name">Canva Light Column Photo</div>
+<div class="template-font">Work Sans</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 31 -->
+<div class="template-card" onclick="selectTemplate('canva-modern-slate-grid', 'Space Grotesk', '#334155', '#f8fafc')">
+<div class="template-preview" style="background: linear-gradient(135deg, #0f172a 0%, #334155 60%, #94a3b8 100%); color: #f8fafc; font-family: 'Space Grotesk';">
+<div class="preview-name">Modern Slate</div>
+<div class="preview-text">Grid Layout</div>
+</div>
+<div class="template-name">Canva Modern Slate Grid</div>
+<div class="template-font">Space Grotesk</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 32 -->
+<div class="template-card" onclick="selectTemplate('canva-soft-corporate-column', 'DM Sans', '#155e75', '#f0fdff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #083344 0%, #155e75 55%, #06b6d4 100%); color: #e6fbff; font-family: 'DM Sans';">
+<div class="preview-name">Soft Corporate</div>
+<div class="preview-text">Column Layout</div>
+</div>
+<div class="template-name">Canva Soft Corporate Column</div>
+<div class="template-font">DM Sans</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 33 -->
+<div class="template-card" onclick="selectTemplate('canva-editorial-split', 'Cormorant Garamond', '#7c2d12', '#fff7ed')">
+<div class="template-preview" style="background: linear-gradient(135deg, #7c2d12 0%, #c2410c 55%, #fb923c 100%); color: #fff7ed; font-family: 'Cormorant Garamond';">
+<div class="preview-name">Editorial Split</div>
+<div class="preview-text">Magazine Resume</div>
+</div>
+<div class="template-name">Canva Editorial Split</div>
+<div class="template-font">Cormorant Garamond</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 34 -->
+<div class="template-card" onclick="selectTemplate('canva-minimal-line', 'Montserrat', '#1f2937', '#ffffff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #111827 0%, #1f2937 65%, #6b7280 100%); color: #f9fafb; font-family: 'Montserrat';">
+<div class="preview-name">Minimal Line</div>
+<div class="preview-text">Clean Professional</div>
+</div>
+<div class="template-name">Canva Minimal Line</div>
+<div class="template-font">Montserrat</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 35 -->
+<div class="template-card" onclick="selectTemplate('canva-neo-sidebar', 'Manrope', '#0f766e', '#f0fdfa')">
+<div class="template-preview" style="background: linear-gradient(135deg, #134e4a 0%, #0f766e 55%, #2dd4bf 100%); color: #f0fdfa; font-family: 'Manrope';">
+<div class="preview-name">Neo Sidebar</div>
+<div class="preview-text">Executive Layout</div>
+</div>
+<div class="template-name">Canva Neo Sidebar</div>
+<div class="template-font">Manrope</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 36 -->
+<div class="template-card" onclick="selectTemplate('canva-professional-dual-tone', 'Plus Jakarta Sans', '#7f1d1d', '#fff7f7')">
+<div class="template-preview" style="background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 55%, #f87171 100%); color: #fff5f5; font-family: 'Plus Jakarta Sans';">
+<div class="preview-name">Dual Tone</div>
+<div class="preview-text">Professional Impact</div>
+</div>
+<div class="template-name">Canva Professional Dual Tone</div>
+<div class="template-font">Plus Jakarta Sans</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 37 -->
+<div class="template-card" onclick="selectTemplate('canva-timeline-executive', 'Poppins', '#1d4ed8', '#eff6ff')">
+<div class="template-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #60a5fa 100%); color: #eff6ff; font-family: 'Poppins';">
+<div class="preview-name">Timeline Exec</div>
+<div class="preview-text">Career Story Layout</div>
+</div>
+<div class="template-name">Canva Timeline Executive</div>
+<div class="template-font">Poppins</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
+<!-- Template 38 -->
+<div class="template-card" onclick="selectTemplate('canva-elegant-two-panel', 'Libre Baskerville', '#374151', '#f9fafb')">
+<div class="template-preview" style="background: linear-gradient(135deg, #111827 0%, #374151 62%, #9ca3af 100%); color: #f9fafb; font-family: 'Libre Baskerville';">
+<div class="preview-name">Elegant Panel</div>
+<div class="preview-text">Two Panel Resume</div>
+</div>
+<div class="template-name">Canva Elegant Two Panel</div>
+<div class="template-font">Libre Baskerville</div>
+<div class="template-tag">Canva Layout</div>
+</div>
+
 </div>
 </div>
 
@@ -969,6 +1432,16 @@ textarea { resize: vertical; }
 <div class="section-card">
 <div class="section-header">
 <div class="circle">7</div>
+<h3>Attach Documents</h3>
+</div>
+<div id="documentsContainer"></div>
+<button class="dashed-btn" onclick="addAttachmentDocument()">+ Add Document</button>
+<p class="doc-note">Upload certificates, letters, marksheets, or portfolio proofs. Image and PDF files are appended as separate pages in the downloaded PDF.</p>
+</div>
+
+<div class="section-card">
+<div class="section-header">
+<div class="circle">8</div>
 <h3>Download Settings</h3>
 </div>
 <div class="input-group">
@@ -979,6 +1452,106 @@ textarea { resize: vertical; }
 <option value="legal">Legal (216 × 356 mm) — US Legal</option>
 <option value="a3">A3 (297 × 420 mm) — Large Format</option>
 </select>
+</div>
+
+<div class="preview-edit-tools">
+<h4>Preview Editing (Word-like)</h4>
+
+<div class="preview-edit-row">
+<input type="checkbox" id="enablePreviewEdit">
+<label for="enablePreviewEdit" style="margin:0; font-weight:600; color:#1e3a8a;">Enable direct editing inside preview</label>
+</div>
+
+<div class="word-toolbar" id="wordToolbar">
+<div class="word-toolbar-row">
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('bold')"><b>B</b></button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('italic')"><i>I</i></button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('underline')"><u>U</u></button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('strikeThrough')"><s>S</s></button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('justifyLeft')">L</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('justifyCenter')">C</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('justifyRight')">R</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('insertUnorderedList')">• List</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('insertOrderedList')">1. List</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('removeFormat')">Clear</button>
+</div>
+<div class="word-toolbar-row">
+<select id="fontFamilyControl" class="word-select" data-requires-edit="true" onchange="applyPreviewFontFamily(this.value)">
+<option value="">Font Family</option>
+<option value="Poppins">Poppins</option>
+<option value="DM Sans">DM Sans</option>
+<option value="Manrope">Manrope</option>
+<option value="Montserrat">Montserrat</option>
+<option value="Roboto">Roboto</option>
+<option value="Times New Roman">Times New Roman</option>
+</select>
+<select id="fontSizeControl" class="word-select" data-requires-edit="true" onchange="applyPreviewFontSize(this.value)">
+<option value="">Font Size</option>
+<option value="2">Small</option>
+<option value="3">Normal</option>
+<option value="4">Medium</option>
+<option value="5">Large</option>
+<option value="6">X-Large</option>
+</select>
+<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#334155;">
+Text
+<input id="textColorControl" class="word-color" data-requires-edit="true" type="color" value="#111827" onchange="applyPreviewColor(this.value)">
+</label>
+<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#334155;">
+Highlight
+<input id="highlightColorControl" class="word-color" data-requires-edit="true" type="color" value="#fff59d" onchange="applyPreviewHighlight(this.value)">
+</label>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('undo')">Undo</button>
+<button type="button" class="word-btn" data-requires-edit="true" onclick="runPreviewCommand('redo')">Redo</button>
+</div>
+</div>
+
+<div class="preview-edit-grid">
+<div class="preview-edit-item">
+<label for="fontScale">Font Size Scale</label>
+<input type="range" id="fontScale" min="80" max="140" value="100">
+<div class="preview-edit-value" id="fontScaleValue">100%</div>
+</div>
+<div class="preview-edit-item">
+<label for="lineSpacing">Line Spacing</label>
+<input type="range" id="lineSpacing" min="1" max="2" step="0.05" value="1.45">
+<div class="preview-edit-value" id="lineSpacingValue">1.45</div>
+</div>
+<div class="preview-edit-item">
+<label for="sectionSpacing">Section Spacing</label>
+<input type="range" id="sectionSpacing" min="8" max="36" value="20">
+<div class="preview-edit-value" id="sectionSpacingValue">20px</div>
+</div>
+<div class="preview-edit-item">
+<label for="contentShift">Horizontal Shift</label>
+<input type="range" id="contentShift" min="-40" max="40" value="0">
+<div class="preview-edit-value" id="contentShiftValue">0px</div>
+</div>
+</div>
+
+<div class="preview-edit-row">
+<button type="button" class="mini-btn" onclick="resetPreviewAdjustments()">Reset Preview Adjustments</button>
+</div>
+</div>
+
+<div class="preview-edit-tools">
+<h4>PDF Size Compressor</h4>
+<div class="preview-edit-row">
+<input type="checkbox" id="enableSizeTarget">
+<label for="enableSizeTarget" style="margin:0; font-weight:600; color:#1e3a8a;">Compress PDF to target size</label>
+</div>
+<div class="preview-edit-row">
+<input type="number" id="targetFileSize" min="10" value="500" style="max-width:140px;">
+<select id="targetFileUnit" style="max-width:120px;">
+<option value="KB">KB</option>
+<option value="MB">MB</option>
+</select>
+<select id="compressionPreset" style="max-width:200px;">
+<option value="best">Best Quality</option>
+<option value="balanced" selected>Balanced</option>
+<option value="small">Smaller File</option>
+</select>
+</div>
 </div>
 </div>
 
@@ -1001,6 +1574,7 @@ textarea { resize: vertical; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.js"></script>
 
 <script>
 
@@ -1175,6 +1749,19 @@ div.innerHTML = `
 container.appendChild(div);
 }
 
+function addAttachmentDocument() {
+const container = document.getElementById('documentsContainer');
+const div = document.createElement('div');
+div.className = 'entry-box';
+div.innerHTML = `
+<input type="text" placeholder="Document Title (Example: Experience Letter)" class="docTitle">
+<textarea placeholder="Optional note for this attachment" class="docNote"></textarea>
+<input type="file" class="docFile" accept="image/*,.pdf">
+<button class="remove-btn" onclick="this.parentElement.remove()">🗑 Remove</button>
+`;
+container.appendChild(div);
+}
+
 function toggleFresherMode() {
 const isFresher = document.getElementById('isFresher').checked;
 const container = document.getElementById('experienceContainer');
@@ -1200,6 +1787,656 @@ return String(value || '')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+const previewAdjustments = {
+    fontScale: 100,
+    lineSpacing: 1.45,
+    sectionSpacing: 20,
+    contentShift: 0
+};
+
+function updateRangeText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
+function applyPreviewAdjustments() {
+    const card = document.querySelector('#resumePreview .resume-card');
+    if (!card) return;
+
+    card.style.fontSize = `${previewAdjustments.fontScale}%`;
+    card.style.lineHeight = String(previewAdjustments.lineSpacing);
+    card.style.transform = `translateX(${previewAdjustments.contentShift}px)`;
+
+    const sections = card.querySelectorAll('.resume-section');
+    sections.forEach((section, index) => {
+        section.style.marginTop = index === 0 ? '0px' : `${previewAdjustments.sectionSpacing}px`;
+    });
+}
+
+function setPreviewEditMode() {
+    const enabled = document.getElementById('enablePreviewEdit')?.checked;
+    const card = document.querySelector('#resumePreview .resume-card');
+    if (!card) return;
+
+    card.classList.toggle('resume-edit-mode', Boolean(enabled));
+    card.setAttribute('contenteditable', enabled ? 'true' : 'false');
+    card.querySelectorAll('img').forEach(img => {
+        img.setAttribute('draggable', enabled ? 'true' : 'false');
+    });
+    toggleWordToolsState(Boolean(enabled));
+}
+
+function focusPreviewCard() {
+    const card = document.querySelector('#resumePreview .resume-card');
+    if (card) card.focus();
+}
+
+function runPreviewCommand(command, value = null) {
+    const enabled = document.getElementById('enablePreviewEdit')?.checked;
+    if (!enabled) {
+        showToast('Enable preview editing first.');
+        return;
+    }
+    focusPreviewCard();
+    document.execCommand('styleWithCSS', false, true);
+    document.execCommand(command, false, value);
+}
+
+function applyPreviewColor(color) {
+    runPreviewCommand('foreColor', color);
+}
+
+function applyPreviewHighlight(color) {
+    runPreviewCommand('hiliteColor', color);
+}
+
+function applyPreviewFontSize(size) {
+    if (!size) return;
+    runPreviewCommand('fontSize', size);
+}
+
+function applyPreviewFontFamily(family) {
+    if (!family) return;
+    runPreviewCommand('fontName', family);
+}
+
+function toggleWordToolsState(enabled) {
+    document.querySelectorAll('[data-requires-edit="true"]').forEach((el) => {
+        el.disabled = !enabled;
+    });
+}
+
+function resetPreviewAdjustments() {
+    const fontScale = document.getElementById('fontScale');
+    const lineSpacing = document.getElementById('lineSpacing');
+    const sectionSpacing = document.getElementById('sectionSpacing');
+    const contentShift = document.getElementById('contentShift');
+
+    if (fontScale) fontScale.value = '100';
+    if (lineSpacing) lineSpacing.value = '1.45';
+    if (sectionSpacing) sectionSpacing.value = '20';
+    if (contentShift) contentShift.value = '0';
+
+    previewAdjustments.fontScale = 100;
+    previewAdjustments.lineSpacing = 1.45;
+    previewAdjustments.sectionSpacing = 20;
+    previewAdjustments.contentShift = 0;
+
+    updateRangeText('fontScaleValue', '100%');
+    updateRangeText('lineSpacingValue', '1.45');
+    updateRangeText('sectionSpacingValue', '20px');
+    updateRangeText('contentShiftValue', '0px');
+
+    applyPreviewAdjustments();
+}
+
+function initPreviewTooling() {
+    const fontScale = document.getElementById('fontScale');
+    const lineSpacing = document.getElementById('lineSpacing');
+    const sectionSpacing = document.getElementById('sectionSpacing');
+    const contentShift = document.getElementById('contentShift');
+    const enablePreviewEdit = document.getElementById('enablePreviewEdit');
+    const toolbarButtons = document.querySelectorAll('.word-btn');
+
+    if (fontScale) {
+        fontScale.addEventListener('input', () => {
+            previewAdjustments.fontScale = Number(fontScale.value || 100);
+            updateRangeText('fontScaleValue', `${previewAdjustments.fontScale}%`);
+            applyPreviewAdjustments();
+        });
+    }
+
+    if (lineSpacing) {
+        lineSpacing.addEventListener('input', () => {
+            previewAdjustments.lineSpacing = Number(lineSpacing.value || 1.45);
+            updateRangeText('lineSpacingValue', `${previewAdjustments.lineSpacing.toFixed(2)}`);
+            applyPreviewAdjustments();
+        });
+    }
+
+    if (sectionSpacing) {
+        sectionSpacing.addEventListener('input', () => {
+            previewAdjustments.sectionSpacing = Number(sectionSpacing.value || 20);
+            updateRangeText('sectionSpacingValue', `${previewAdjustments.sectionSpacing}px`);
+            applyPreviewAdjustments();
+        });
+    }
+
+    if (contentShift) {
+        contentShift.addEventListener('input', () => {
+            previewAdjustments.contentShift = Number(contentShift.value || 0);
+            updateRangeText('contentShiftValue', `${previewAdjustments.contentShift}px`);
+            applyPreviewAdjustments();
+        });
+    }
+
+    if (enablePreviewEdit) {
+        enablePreviewEdit.addEventListener('change', setPreviewEditMode);
+    }
+
+    toolbarButtons.forEach((btn) => {
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+    });
+
+    toggleWordToolsState(false);
+}
+
+function getTargetSizeBytes() {
+    const enabled = document.getElementById('enableSizeTarget')?.checked;
+    if (!enabled) return null;
+
+    const size = Number(document.getElementById('targetFileSize')?.value || 0);
+    const unit = document.getElementById('targetFileUnit')?.value || 'KB';
+
+    if (!size || size <= 0) return null;
+    return unit === 'MB' ? size * 1024 * 1024 : size * 1024;
+}
+
+function getInitialCompressionQuality() {
+    const preset = document.getElementById('compressionPreset')?.value || 'balanced';
+    if (preset === 'best') return 0.92;
+    if (preset === 'small') return 0.62;
+    return 0.78;
+}
+
+function createScaledCanvas(sourceCanvas, scaleFactor) {
+    if (scaleFactor >= 0.99) return sourceCanvas;
+    const scaled = document.createElement('canvas');
+    scaled.width = Math.max(1, Math.floor(sourceCanvas.width * scaleFactor));
+    scaled.height = Math.max(1, Math.floor(sourceCanvas.height * scaleFactor));
+    const ctx = scaled.getContext('2d');
+    ctx.drawImage(sourceCanvas, 0, 0, scaled.width, scaled.height);
+    return scaled;
+}
+
+function buildPdfFromCanvas(canvas, paperSize, quality, scaleFactor) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', paperSize);
+    const renderCanvas = createScaledCanvas(canvas, scaleFactor);
+    const imgData = renderCanvas.toDataURL('image/jpeg', quality);
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const usableHeight = pageHeight - (margin * 2);
+    const imgWidth = pageWidth - (margin * 2);
+    const imgHeight = renderCanvas.height * imgWidth / renderCanvas.width;
+
+    let heightLeft = imgHeight;
+    let position = margin;
+
+    pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
+    heightLeft -= usableHeight;
+
+    while (heightLeft > 0) {
+        pdf.addPage();
+        position = margin - (imgHeight - heightLeft);
+        pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= usableHeight;
+    }
+
+    return pdf;
+}
+
+async function collectAttachmentPayloads() {
+    const titles = document.querySelectorAll('.docTitle');
+    const notes = document.querySelectorAll('.docNote');
+    const files = document.querySelectorAll('.docFile');
+    const attachments = [];
+    let unsupportedCount = 0;
+
+    if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.js';
+    }
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i]?.files?.[0];
+        if (!file) continue;
+
+        const title = titles[i]?.value?.trim() || file.name;
+        const note = notes[i]?.value?.trim() || '';
+
+        if (file.type.startsWith('image/')) {
+            const dataUrl = await readFileAsDataURL(file);
+            if (dataUrl) {
+                attachments.push({
+                    kind: 'image',
+                    title,
+                    note,
+                    name: file.name,
+                    dataUrl
+                });
+            }
+        } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+            try {
+                if (!window.pdfjsLib) throw new Error('pdfjsLib not available');
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                    const page = await pdf.getPage(pageNumber);
+                    const viewport = page.getViewport({ scale: 1.4 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    await page.render({ canvasContext: context, viewport }).promise;
+                    const pageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+                    attachments.push({
+                        kind: 'pdf-image',
+                        title: pdf.numPages > 1 ? `${title} (Page ${pageNumber})` : title,
+                        note,
+                        name: file.name,
+                        dataUrl: pageDataUrl
+                    });
+                }
+            } catch (e) {
+                attachments.push({
+                    kind: 'note',
+                    title,
+                    note: note ? `${note} | PDF could not be rendered in browser.` : 'PDF could not be rendered in browser.',
+                    name: file.name
+                });
+                unsupportedCount += 1;
+            }
+        } else {
+            attachments.push({
+                kind: 'note',
+                title,
+                note,
+                name: file.name
+            });
+            unsupportedCount += 1;
+        }
+    }
+
+    return { attachments, unsupportedCount };
+}
+
+function appendAttachmentPages(pdf, attachments) {
+    if (!attachments.length) return;
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 12;
+    const usableWidth = pageWidth - (margin * 2);
+    const usableHeight = pageHeight - (margin * 2);
+
+    attachments.forEach((item, index) => {
+        pdf.addPage();
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(14);
+        pdf.text(`Attachment ${index + 1}: ${item.title}`, margin, margin + 4);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        pdf.text(`File: ${item.name}`, margin, margin + 12);
+        if (item.note) {
+            const wrappedNote = pdf.splitTextToSize(`Note: ${item.note}`, usableWidth);
+            pdf.text(wrappedNote, margin, margin + 19);
+        }
+
+        if ((item.kind === 'image' || item.kind === 'pdf-image') && item.dataUrl) {
+            const img = new Image();
+            img.src = item.dataUrl;
+            const safeWidth = img.width || 1200;
+            const safeHeight = img.height || 1600;
+
+            const maxTop = margin + (item.note ? 34 : 25);
+            const imageAreaHeight = pageHeight - maxTop - margin;
+            const ratio = Math.min(usableWidth / safeWidth, imageAreaHeight / safeHeight);
+            const drawW = safeWidth * ratio;
+            const drawH = safeHeight * ratio;
+            const x = (pageWidth - drawW) / 2;
+            const y = maxTop;
+
+            pdf.addImage(item.dataUrl, 'JPEG', x, y, drawW, drawH, undefined, 'FAST');
+        } else {
+            pdf.setTextColor(120, 120, 120);
+            pdf.text('Preview is not available for this file type in browser PDF export.', margin, margin + 28);
+            pdf.setTextColor(0, 0, 0);
+        }
+    });
+}
+
+function buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments) {
+    const pdf = buildPdfFromCanvas(canvas, paperSize, quality, scaleFactor);
+    appendAttachmentPages(pdf, attachments);
+    return pdf.output('blob');
+}
+
+function makeSectionTitle(title, color, compact = false) {
+    const marginTop = compact ? 12 : 20;
+    return `<h3 style="color:${color}; margin-top:${marginTop}px; border-bottom:2px solid ${color}; padding-bottom:5px;">${title}</h3>`;
+}
+
+function buildDefaultLayout(data) {
+    const {
+        color, font, bgColor, profilePhotoHtml, userName, userAge, userEmail,
+        userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
+        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+    } = data;
+
+    return `
+    <div class="resume-card" style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
+    <div class="resume-header">
+    ${profilePhotoHtml}
+    <div class="resume-header-content">
+    <h2 style="color:${color}; margin-bottom: 10px;">${userName}</h2>
+    <div class="resume-contact-grid">
+    <p class="resume-line-item"><b>Age:</b> ${userAge}</p>
+    <p class="resume-line-item"><b>Email:</b> ${userEmail}</p>
+    <p class="resume-line-item"><b>Phone:</b> ${userPhone}</p>
+    <p class="resume-line-item"><b>Address:</b> ${userAddress}</p>
+    ${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
+    ${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
+    </div>
+    </div>
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Skills', color)}
+    ${skillsSectionHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Professional Summary', color)}
+    <p class="resume-text-block">${userSummary}</p>
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Education', color)}
+    ${educationHtml}
+    </div>
+    <div class="resume-section">
+    ${experienceSectionHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Attached Documents', color)}
+    ${documentsSectionHtml}
+    </div>
+    </div>
+    `;
+}
+
+function buildTwoColumnLayout(data, sidebarBg, sidebarText, cardBg) {
+    const {
+        color, font, profilePhotoHtml, userName, userAge, userEmail,
+        userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
+        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+    } = data;
+
+    return `
+    <div class="resume-card" style="font-family:'${font}', sans-serif; background:${cardBg}; padding:24px; border-radius:16px;">
+    <div class="canva-layout-grid">
+    <aside class="canva-layout-side resume-section" style="background:${sidebarBg}; color:${sidebarText};">
+    ${profilePhotoHtml}
+    <h2 style="margin-top:14px; margin-bottom:8px; color:${sidebarText};">${userName}</h2>
+    <p class="resume-line-item"><b>Age:</b> ${userAge}</p>
+    <p class="resume-line-item"><b>Email:</b> ${userEmail}</p>
+    <p class="resume-line-item"><b>Phone:</b> ${userPhone}</p>
+    <p class="resume-line-item"><b>Address:</b> ${userAddress}</p>
+    ${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
+    ${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
+    <div class="resume-section">
+    <h4 style="margin-top:14px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.45); padding-bottom:4px;">Skills</h4>
+    ${skillsSectionHtml}
+    </div>
+    <div class="resume-section">
+    <h4 style="margin-top:14px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.45); padding-bottom:4px;">Documents</h4>
+    ${documentsSectionHtml}
+    </div>
+    </aside>
+    <section class="canva-layout-main">
+    <div class="resume-section">
+    ${makeSectionTitle('Professional Summary', color, true)}
+    <p class="resume-text-block">${userSummary}</p>
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Experience', color, true)}
+    ${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Education', color, true)}
+    ${educationHtml}
+    </div>
+    </section>
+    </div>
+    </div>
+    `;
+}
+
+function buildTimelineLayout(data, cardBg) {
+    const {
+        color, font, profilePhotoHtml, userName, userAge, userEmail,
+        userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
+        userSummary, educationHtml, expHtml, isFresher, documentsSectionHtml
+    } = data;
+
+    const timelineExp = isFresher
+        ? `<p class="resume-empty-note">Fresher - ready to begin a professional career and build hands-on experience.</p>`
+        : (expHtml ? `<div class="canva-timeline-item" style="color:${color};">${expHtml}</div>` : `<p class="resume-empty-note">No experience added yet.</p>`);
+
+    return `
+    <div class="resume-card" style="font-family:'${font}', sans-serif; background:${cardBg}; padding:24px; border-radius:14px;">
+    <div class="resume-header" style="border-bottom:2px solid ${color}; padding-bottom:14px; margin-bottom:14px;">
+    ${profilePhotoHtml}
+    <div class="resume-header-content">
+    <h2 style="color:${color}; margin:0 0 8px 0; letter-spacing:0.4px;">${userName}</h2>
+    <div class="resume-contact-grid">
+    <p class="resume-line-item"><b>Age:</b> ${userAge}</p>
+    <p class="resume-line-item"><b>Email:</b> ${userEmail}</p>
+    <p class="resume-line-item"><b>Phone:</b> ${userPhone}</p>
+    <p class="resume-line-item"><b>Address:</b> ${userAddress}</p>
+    ${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
+    ${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
+    </div>
+    </div>
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Profile', color, true)}
+    <p class="resume-text-block">${userSummary}</p>
+    </div>
+    <div class="resume-section" style="color:${color};">
+    ${makeSectionTitle('Career Timeline', color, true)}
+    ${timelineExp}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Skills', color, true)}
+    ${skillsSectionHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Education', color, true)}
+    ${educationHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Attached Documents', color, true)}
+    ${documentsSectionHtml}
+    </div>
+    </div>
+    `;
+}
+
+function buildEditorialLayout(data, cardBg, accent2) {
+    const {
+        color, font, profilePhotoHtml, userName, userAge, userEmail,
+        userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
+        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+    } = data;
+
+    return `
+    <div class="resume-card" style="font-family:'${font}', serif; background:${cardBg}; padding:26px; border-radius:12px; border:1px solid ${accent2};">
+    <div class="resume-section" style="text-align:center; padding-bottom:10px; border-bottom:2px solid ${accent2};">
+    ${profilePhotoHtml ? `<div style="display:flex; justify-content:center; margin-bottom:8px;">${profilePhotoHtml}</div>` : ''}
+    <h1 style="font-size:32px; color:${color}; margin:0; letter-spacing:1px;">${userName}</h1>
+    <p style="margin:8px 0 0; color:#475569;">${userEmail} | ${userPhone}</p>
+    <p style="margin:4px 0 0; color:#64748b;">${userAddress}${userLinkedin ? ` | ${userLinkedin}` : ''}${userGithub ? ` | ${userGithub}` : ''}</p>
+    <p style="margin:4px 0 0; color:#64748b;">Age: ${userAge}</p>
+    </div>
+    <div class="canva-layout-grid" style="grid-template-columns:minmax(0,1fr) minmax(220px,32%); margin-top:14px;">
+    <section class="canva-layout-main">
+    <div class="resume-section">${makeSectionTitle('Professional Summary', color, true)}<p class="resume-text-block">${userSummary}</p></div>
+    <div class="resume-section">${makeSectionTitle('Experience', color, true)}${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}</div>
+    <div class="resume-section">${makeSectionTitle('Education', color, true)}${educationHtml}</div>
+    </section>
+    <aside class="canva-layout-side" style="background:#fff; border:1px dashed ${accent2}; color:#1f2937;">
+    <div class="resume-section">${makeSectionTitle('Skills', color, true)}${skillsSectionHtml}</div>
+    <div class="resume-section">${makeSectionTitle('Attached Documents', color, true)}${documentsSectionHtml}</div>
+    </aside>
+    </div>
+    </div>
+    `;
+}
+
+function buildPhotoRightLayout(data) {
+    const {
+        color, font, profilePhotoHtml, userName, userAge, userEmail,
+        userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
+        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+    } = data;
+
+    // Derive a lightened version of the accent for sidebar
+    const sidebarBg  = '#eaf3ff';
+    const sidebarBdr = '#bfdbfe';
+    const mainBg     = '#ffffff';
+    const cardBg     = '#f4f8ff';
+
+    const photoBlock = profilePhotoHtml
+        ? `<div style="flex-shrink:0; margin-left:24px; align-self:flex-start;">
+               <div style="width:130px; height:130px; overflow:hidden; border-radius:14px; border:4px solid rgba(255,255,255,0.9); box-shadow:0 6px 20px rgba(0,0,0,0.22);">
+                   ${profilePhotoHtml.replace(/class="resume-profile-photo"/, 'style="width:130px;height:130px;object-fit:cover;object-position:center;display:block;border-radius:0;"')}
+               </div>
+           </div>`
+        : '';
+
+    const contactLine = [
+        userEmail   ? `<span>✉&nbsp;${userEmail}</span>`         : '',
+        userPhone   ? `<span>📞&nbsp;${userPhone}</span>`         : '',
+        userAddress ? `<span>📍&nbsp;${userAddress}</span>`       : '',
+        userAge     ? `<span>Age:&nbsp;${userAge}</span>`         : '',
+        userLinkedin? `<span>🔗&nbsp;${userLinkedin}</span>`      : '',
+        userGithub  ? `<span>💻&nbsp;${userGithub}</span>`        : ''
+    ].filter(Boolean).join('');
+
+    const sectionH = (title) =>
+        `<h4 style="color:${color}; margin:0 0 10px 0; font-weight:700; font-size:13px;
+             letter-spacing:0.6px; text-transform:uppercase; border-left:3px solid ${color};
+             padding-left:8px;">${title}</h4>`;
+
+    const bodyExpHtml = experienceSectionHtml.replace(/<h3[^>]*>[^<]*Experience[^<]*<\/h3>/, '');
+
+    return `
+    <div class="resume-card" style="font-family:'${font}', sans-serif; background:${cardBg}; border-radius:16px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+      <!-- ── HEADER: Name LEFT · Photo RIGHT ── -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:${color}; padding:28px 28px 24px 28px;">
+        <div style="flex:1; min-width:0;">
+          <h1 style="color:#ffffff; font-size:2.1em; font-weight:800; margin:0 0 6px 0; letter-spacing:0.4px; line-height:1.15;">${userName}</h1>
+          <div style="display:flex; flex-wrap:wrap; gap:5px 18px; color:rgba(255,255,255,0.84); font-size:12.5px; margin-top:10px;">
+            ${contactLine}
+          </div>
+        </div>
+        ${photoBlock}
+      </div>
+
+      <!-- ── BODY: Light sidebar LEFT · Main RIGHT ── -->
+      <div style="display:grid; grid-template-columns:220px minmax(0,1fr);">
+
+        <!-- Sidebar -->
+        <aside style="background:${sidebarBg}; padding:20px 18px; border-right:1px solid ${sidebarBdr};">
+          <div style="margin-bottom:22px;">
+            ${sectionH('Skills')}
+            ${skillsSectionHtml}
+          </div>
+          <div>
+            ${sectionH('Attached Documents')}
+            ${documentsSectionHtml}
+          </div>
+        </aside>
+
+        <!-- Main -->
+        <section style="background:${mainBg}; padding:20px 22px;">
+          <div style="margin-bottom:18px;">
+            ${sectionH('Professional Summary')}
+            <p class="resume-text-block" style="margin:0; color:#374151;">${userSummary}</p>
+          </div>
+          <div style="margin-bottom:18px;">
+            ${sectionH('Experience')}
+            ${bodyExpHtml || '<p class="resume-empty-note">No experience added yet.</p>'}
+          </div>
+          <div>
+            ${sectionH('Education')}
+            ${educationHtml || '<p class="resume-empty-note">No education added yet.</p>'}
+          </div>
+        </section>
+
+      </div>
+    </div>
+    `;
+}
+
+function getLayoutByTemplateName(templateName) {
+    const photoRight = new Set([
+        'canva-photo-right-modern', 'canva-light-column-photo',
+        'canva-clean-light-split', 'canva-pro-light-photo',
+        'generic-modern-canva-style', 'two-column-professional-resume'
+    ]);
+    const twoColumn = new Set([
+        'canva-neo-corp', 'canva-modern-slate-grid',
+        'canva-soft-corporate-column', 'canva-neo-sidebar', 'canva-elegant-two-panel'
+    ]);
+    const editorial = new Set([
+        'canva-editorial', 'canva-editorial-split', 'canva-terra', 'canva-night-gold',
+        'canva-professional-dual-tone'
+    ]);
+    const timeline = new Set([
+        'canva-timeline-executive', 'canva-swiss', 'canva-cobalt', 'canva-glass',
+        'canva-minimal-line', 'canva-sage'
+    ]);
+
+    if (photoRight.has(templateName)) return 'photo-right';
+    if (twoColumn.has(templateName)) return 'two-column';
+    if (editorial.has(templateName)) return 'editorial';
+    if (timeline.has(templateName)) return 'timeline';
+    return 'default';
+}
+
+function buildResumeLayoutByTemplate(data) {
+    const layout = getLayoutByTemplateName(data.templateName);
+    if (layout === 'photo-right') {
+        return buildPhotoRightLayout(data);
+    }
+    if (layout === 'two-column') {
+        return buildTwoColumnLayout(data, data.color, '#ffffff', data.bgColor);
+    }
+    if (layout === 'editorial') {
+        return buildEditorialLayout(data, data.bgColor, data.color);
+    }
+    if (layout === 'timeline') {
+        return buildTimelineLayout(data, data.bgColor);
+    }
+    return buildDefaultLayout(data);
 }
 
 // Helper function to read file as base64
@@ -1234,6 +2471,23 @@ const userSummary = document.getElementById('summary').value;
 const userSkills = document.getElementById('skills').value;
 const userSkillsList = parseSkills(userSkills);
 const isFresher = document.getElementById('isFresher').checked;
+
+const docTitles = document.querySelectorAll('.docTitle');
+const docNotes = document.querySelectorAll('.docNote');
+const docFiles = document.querySelectorAll('.docFile');
+const documentItems = [];
+for (let i = 0; i < docFiles.length; i++) {
+    const title = docTitles[i]?.value?.trim() || '';
+    const note = docNotes[i]?.value?.trim() || '';
+    const file = docFiles[i]?.files?.[0];
+    if (title || note || file) {
+        documentItems.push({
+            title: title || (file ? file.name : 'Supporting Document'),
+            note,
+            fileName: file ? file.name : ''
+        });
+    }
+}
 
 // Get profile photo
 const profilePhotoFile = document.getElementById('profilePhoto').files[0];
@@ -1308,31 +2562,36 @@ const skillsSectionHtml = userSkillsList.length
     ? `<ul class="resume-skills-list">${userSkillsList.map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>`
     : `<p class="resume-empty-note">No skills added yet.</p>`;
 
-document.getElementById('resumePreview').innerHTML = `
-<div class="resume-card" style="font-family: '${font}', sans-serif; background: ${bgColor}; padding: 30px; border-radius: 12px;">
-<div class="resume-header">
-${profilePhotoHtml}
-<div class="resume-header-content">
-<h2 style="color:${color}; margin-bottom: 10px;">${userName}</h2>
-<div class="resume-contact-grid">
-<p class="resume-line-item"><b>Age:</b> ${userAge}</p>
-<p class="resume-line-item"><b>Email:</b> ${userEmail}</p>
-<p class="resume-line-item"><b>Phone:</b> ${userPhone}</p>
-<p class="resume-line-item"><b>Address:</b> ${userAddress}</p>
-${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
-${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
-</div>
-</div>
-</div>
-<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Skills</h3>
-${skillsSectionHtml}
-<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Professional Summary</h3>
-<p class="resume-text-block">${userSummary}</p>
-<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Education</h3>
-${educationHtml}
-${experienceSectionHtml}
-</div>
-`;
+const documentsSectionHtml = documentItems.length
+    ? `<ul class="resume-skills-list">${documentItems.map((doc, idx) => `<li><b>${idx + 1}. ${escapeHtml(doc.title)}</b>${doc.fileName ? ` (${escapeHtml(doc.fileName)})` : ''}${doc.note ? ` - ${escapeHtml(doc.note)}` : ''}</li>`).join('')}</ul>`
+    : `<p class="resume-empty-note">No supporting documents attached.</p>`;
+
+const layoutData = {
+    templateName: selectedTemplate.name,
+    color,
+    font,
+    bgColor,
+    profilePhotoHtml,
+    userName,
+    userAge,
+    userEmail,
+    userPhone,
+    userAddress,
+    userLinkedin,
+    userGithub,
+    userSummary,
+    skillsSectionHtml,
+    educationHtml,
+    expHtml,
+    isFresher,
+    experienceSectionHtml,
+    documentsSectionHtml
+};
+
+document.getElementById('resumePreview').innerHTML = buildResumeLayoutByTemplate(layoutData);
+
+    applyPreviewAdjustments();
+    setPreviewEditMode();
 
     // Auto-save to Firebase after every preview
     if (typeof window.saveResumeToFirestore === 'function') {
@@ -1342,31 +2601,52 @@ ${experienceSectionHtml}
 
 // DOWNLOAD EXACT PREVIEW
 async function downloadResume(){
-await previewResume();
+
+const editModeEnabled = document.getElementById('enablePreviewEdit')?.checked;
+const previewHasContent = document.getElementById('resumePreview')?.innerHTML.trim();
+if (!editModeEnabled || !previewHasContent) {
+    await previewResume();
+}
+
 const element = document.getElementById("resumePreview");
 const canvas = await html2canvas(element, { scale:2, useCORS: true });
-const imgData = canvas.toDataURL("image/png");
-const { jsPDF } = window.jspdf;
 const paperSize = document.getElementById("paperSize")?.value || "a4";
-const pdf = new jsPDF("p", "mm", paperSize);
-const pageWidth  = pdf.internal.pageSize.getWidth();
-const pageHeight = pdf.internal.pageSize.getHeight();
-const imgWidth  = pageWidth - 20;
-const imgHeight = canvas.height * imgWidth / canvas.width;
-// Split into pages if content overflows
-const totalPages = Math.ceil(imgHeight / (pageHeight - 20));
-for (let page = 0; page < totalPages; page++) {
-    if (page > 0) pdf.addPage();
-    const srcY  = page * (canvas.height / totalPages);
-    const srcH  = canvas.height / totalPages;
-    const slice = document.createElement('canvas');
-    slice.width  = canvas.width;
-    slice.height = srcH;
-    slice.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-    pdf.addImage(slice.toDataURL("image/png"), "PNG", 10, 10, imgWidth, pageHeight - 20);
+const { attachments, unsupportedCount } = await collectAttachmentPayloads();
+
+const targetBytes = getTargetSizeBytes();
+let quality = getInitialCompressionQuality();
+let scaleFactor = 1.0;
+let pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
+
+if (targetBytes) {
+    let attempts = 0;
+    while (pdfBlob.size > targetBytes && attempts < 10) {
+        if (quality > 0.35) {
+            quality = Math.max(0.35, quality - 0.08);
+        } else {
+            scaleFactor = Math.max(0.55, scaleFactor - 0.1);
+        }
+        pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
+        attempts += 1;
+    }
 }
+
 const userName = document.getElementById('name').value.trim() || "Resume";
-pdf.save(`${userName}_Resume_${paperSize.toUpperCase()}.pdf`);
+const fileName = `${userName}_Resume_${paperSize.toUpperCase()}.pdf`;
+
+const blobUrl = URL.createObjectURL(pdfBlob);
+const downloadLink = document.createElement('a');
+downloadLink.href = blobUrl;
+downloadLink.download = fileName;
+downloadLink.click();
+URL.revokeObjectURL(blobUrl);
+
+const kbSize = (pdfBlob.size / 1024).toFixed(1);
+if (unsupportedCount > 0) {
+    showToast(`PDF ready (${kbSize} KB). ${unsupportedCount} unsupported attachment(s) added as note pages.`);
+} else {
+    showToast(`PDF ready (${kbSize} KB)`);
+}
 }
 
 function logout(){
@@ -1460,6 +2740,11 @@ window.saveResumeToFirestore = async function () {
         template:    document.getElementById('template').value    || "modern-blue",
         education:   educations,
         experience:  experiences,
+        documents:   Array.from(document.querySelectorAll('.docTitle')).map((el, i) => ({
+            title: el.value || "",
+            note: document.querySelectorAll('.docNote')[i]?.value || "",
+            fileName: document.querySelectorAll('.docFile')[i]?.files?.[0]?.name || ""
+        })),
         isFresher:   document.getElementById('isFresher').checked,
         userId:      currentUserId,
         userEmail:   currentUserEmail,
@@ -1578,6 +2863,16 @@ window.loadResumeData = function (id) {
         box.querySelector('.expDetails').value = exp.details || "";
     });
 
+    const docContainer = document.getElementById('documentsContainer');
+    docContainer.innerHTML = '';
+    (data.documents || []).forEach(item => {
+        window.addAttachmentDocument();
+        const boxes = docContainer.querySelectorAll('.entry-box');
+        const box = boxes[boxes.length - 1];
+        box.querySelector('.docTitle').value = item.title || "";
+        box.querySelector('.docNote').value = item.note || "";
+    });
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast("📂 Resume loaded! Update and click Preview & Save.");
 };
@@ -1604,6 +2899,9 @@ function showToast(msg) {
         setTimeout(() => { toast.style.display = 'none'; }, 500);
     }, 3500);
 }
+
+initPreviewTooling();
+addAttachmentDocument();
 </script>
 
 </body>
