@@ -470,6 +470,52 @@ textarea { resize: vertical; }
     margin-bottom:6px;
 }
 
+.resume-skills-list.two-column {
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:6px 26px;
+}
+
+.resume-skills-list.two-column li {
+    margin-bottom:0;
+}
+
+.resume-project-list {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.resume-project-item {
+    padding:12px 14px;
+    border-left:3px solid currentColor;
+    border-radius:10px;
+    background:rgba(255,255,255,0.42);
+}
+
+.resume-project-title {
+    margin:0 0 6px;
+    font-size:16px;
+    font-weight:700;
+}
+
+.resume-project-link {
+    display:inline-block;
+    margin-bottom:8px;
+    color:inherit;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.resume-project-link:hover {
+    text-decoration:underline;
+}
+
+.align-btn.active {
+    background:#dbeafe;
+    border-color:#60a5fa;
+}
+
 .canva-layout-grid {
     display: grid;
     grid-template-columns: minmax(220px, 30%) minmax(0, 1fr);
@@ -741,6 +787,10 @@ textarea { resize: vertical; }
 
     .preview-edit-grid {
         grid-template-columns: 1fr;
+    }
+
+    .resume-skills-list.two-column {
+        grid-template-columns:1fr;
     }
 }
 
@@ -1399,8 +1449,18 @@ textarea { resize: vertical; }
 <div class="circle">4</div>
 <h3>Skills <span class="required">*</span></h3>
 </div>
-<div class="input-group">
+<div class="two-column">
+<div class="column input-group">
+<label for="skills">Skills List</label>
 <textarea id="skills" rows="5" placeholder="Enter one skill per line or separate skills with commas"></textarea>
+</div>
+<div class="column input-group">
+<label for="skillsLayout">Skills Layout In Preview</label>
+<select id="skillsLayout">
+<option value="list">Single column bullets</option>
+<option value="two-column">Two column bullets</option>
+</select>
+</div>
 </div>
 </div>
 
@@ -1428,10 +1488,19 @@ textarea { resize: vertical; }
 <button class="dashed-btn" id="addExperienceBtn" onclick="addExperience()">+ Add Experience</button>
 </div>
 
-<!-- DOWNLOAD SETTINGS -->
 <div class="section-card">
 <div class="section-header">
 <div class="circle">7</div>
+<h3>Projects</h3>
+</div>
+<div id="projectsContainer"></div>
+<button class="dashed-btn" onclick="addProject()">+ Add Project</button>
+</div>
+
+<!-- DOWNLOAD SETTINGS -->
+<div class="section-card">
+<div class="section-header">
+<div class="circle">8</div>
 <h3>Attach Documents</h3>
 </div>
 <div id="documentsContainer"></div>
@@ -1441,7 +1510,7 @@ textarea { resize: vertical; }
 
 <div class="section-card">
 <div class="section-header">
-<div class="circle">8</div>
+<div class="circle">9</div>
 <h3>Download Settings</h3>
 </div>
 <div class="input-group">
@@ -1487,11 +1556,6 @@ textarea { resize: vertical; }
 </select>
 <select id="fontSizeControl" class="word-select" data-requires-edit="true" onchange="applyPreviewFontSize(this.value)">
 <option value="">Font Size</option>
-<option value="2">Small</option>
-<option value="3">Normal</option>
-<option value="4">Medium</option>
-<option value="5">Large</option>
-<option value="6">X-Large</option>
 </select>
 <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#334155;">
 Text
@@ -1530,6 +1594,13 @@ Highlight
 </div>
 
 <div class="preview-edit-row">
+<span style="font-size:12px; font-weight:600; color:#334155;">Preview Alignment</span>
+<button type="button" class="mini-btn align-btn active" id="alignLeftBtn" onclick="setPreviewTextAlign('left')">Left</button>
+<button type="button" class="mini-btn align-btn" id="alignCenterBtn" onclick="setPreviewTextAlign('center')">Center</button>
+<button type="button" class="mini-btn align-btn" id="alignRightBtn" onclick="setPreviewTextAlign('right')">Right</button>
+</div>
+
+<div class="preview-edit-row">
 <button type="button" class="mini-btn" onclick="resetPreviewAdjustments()">Reset Preview Adjustments</button>
 </div>
 </div>
@@ -1557,7 +1628,8 @@ Highlight
 
 <!-- BUTTONS -->
 <div class="buttons">
-<button class="btn" onclick="previewResume()">👁 Preview &amp; Save Resume</button>
+<button class="btn" onclick="previewResume()">👁 Preview Resume</button>
+<button class="btn" onclick="saveResumeToFirestore()">💾 Save Resume</button>
 <button class="btn" onclick="downloadResume()">⬇ Download PDF</button>
 </div>
 
@@ -1749,6 +1821,19 @@ div.innerHTML = `
 container.appendChild(div);
 }
 
+function addProject(){
+const container = document.getElementById('projectsContainer');
+const div = document.createElement('div');
+div.className = 'entry-box';
+div.innerHTML = `
+<input type="text" placeholder="Project Name" class="projectName">
+<input type="url" placeholder="Project Link (optional)" class="projectLink">
+<textarea placeholder="About the project, your role, tools used, and results..." class="projectDetails"></textarea>
+<button class="remove-btn" onclick="this.parentElement.remove()">🗑 Remove</button>
+`;
+container.appendChild(div);
+}
+
 function addAttachmentDocument() {
 const container = document.getElementById('documentsContainer');
 const div = document.createElement('div');
@@ -1793,8 +1878,85 @@ const previewAdjustments = {
     fontScale: 100,
     lineSpacing: 1.45,
     sectionSpacing: 20,
-    contentShift: 0
+    contentShift: 0,
+    textAlign: 'left'
 };
+
+let previewDraftHtml = '';
+let formStateDirty = true;
+let previewAutoSaveTimer = null;
+
+function getPreviewDraftStorageKey() {
+    return 'resume-builder-preview-draft';
+}
+
+function savePreviewDraftLocally() {
+    try {
+        localStorage.setItem(getPreviewDraftStorageKey(), JSON.stringify({
+            html: previewDraftHtml,
+            adjustments: { ...previewAdjustments }
+        }));
+    } catch (error) {
+        console.warn('Could not store preview draft locally.', error);
+    }
+}
+
+function loadPreviewDraftLocally() {
+    try {
+        const raw = localStorage.getItem(getPreviewDraftStorageKey());
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        previewDraftHtml = parsed?.html || '';
+        if (parsed?.adjustments) {
+            previewAdjustments.fontScale = Number(parsed.adjustments.fontScale || 100);
+            previewAdjustments.lineSpacing = Number(parsed.adjustments.lineSpacing || 1.45);
+            previewAdjustments.sectionSpacing = Number(parsed.adjustments.sectionSpacing || 20);
+            previewAdjustments.contentShift = Number(parsed.adjustments.contentShift || 0);
+            previewAdjustments.textAlign = parsed.adjustments.textAlign || 'left';
+        }
+    } catch (error) {
+        console.warn('Could not load preview draft.', error);
+    }
+}
+
+function queuePreviewDraftSave() {
+    clearTimeout(previewAutoSaveTimer);
+    previewAutoSaveTimer = setTimeout(() => {
+        const preview = document.getElementById('resumePreview');
+        if (!preview) return;
+        previewDraftHtml = preview.innerHTML.trim();
+        savePreviewDraftLocally();
+    }, 250);
+}
+
+function attachPreviewDraftListener() {
+    const preview = document.getElementById('resumePreview');
+    if (!preview || preview.dataset.autosaveBound === 'true') return;
+
+    preview.addEventListener('input', () => {
+        queuePreviewDraftSave();
+    });
+
+    preview.dataset.autosaveBound = 'true';
+}
+
+function markResumeDirty() {
+    formStateDirty = true;
+}
+
+function initResumeDirtyTracking() {
+    const main = document.querySelector('main');
+    if (!main || main.dataset.dirtyTrackingBound === 'true') return;
+
+    const handler = (event) => {
+        if (event.target.closest('#resumePreview')) return;
+        markResumeDirty();
+    };
+
+    main.addEventListener('input', handler);
+    main.addEventListener('change', handler);
+    main.dataset.dirtyTrackingBound = 'true';
+}
 
 function updateRangeText(id, text) {
     const el = document.getElementById(id);
@@ -1808,11 +1970,32 @@ function applyPreviewAdjustments() {
     card.style.fontSize = `${previewAdjustments.fontScale}%`;
     card.style.lineHeight = String(previewAdjustments.lineSpacing);
     card.style.transform = `translateX(${previewAdjustments.contentShift}px)`;
+    card.style.textAlign = previewAdjustments.textAlign;
 
     const sections = card.querySelectorAll('.resume-section');
     sections.forEach((section, index) => {
         section.style.marginTop = index === 0 ? '0px' : `${previewAdjustments.sectionSpacing}px`;
     });
+
+    queuePreviewDraftSave();
+}
+
+function updateAlignmentButtons() {
+    const alignments = ['left', 'center', 'right'];
+    alignments.forEach((alignment) => {
+        const suffix = alignment.charAt(0).toUpperCase() + alignment.slice(1);
+        const btn = document.getElementById(`align${suffix}Btn`);
+        if (!btn) return;
+        const isActive = previewAdjustments.textAlign === alignment;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+}
+
+function setPreviewTextAlign(alignment) {
+    previewAdjustments.textAlign = alignment;
+    updateAlignmentButtons();
+    applyPreviewAdjustments();
 }
 
 function setPreviewEditMode() {
@@ -1842,6 +2025,7 @@ function runPreviewCommand(command, value = null) {
     focusPreviewCard();
     document.execCommand('styleWithCSS', false, true);
     document.execCommand(command, false, value);
+    queuePreviewDraftSave();
 }
 
 function applyPreviewColor(color) {
@@ -1852,9 +2036,47 @@ function applyPreviewHighlight(color) {
     runPreviewCommand('hiliteColor', color);
 }
 
+function wrapSelectionWithInlineStyle(styleProperty, value) {
+    const enabled = document.getElementById('enablePreviewEdit')?.checked;
+    if (!enabled) {
+        showToast('Enable preview editing first.');
+        return;
+    }
+
+    const card = document.querySelector('#resumePreview .resume-card');
+    const selection = window.getSelection();
+    if (!card || !selection || !selection.rangeCount || selection.isCollapsed) {
+        showToast('Select text in the preview first.');
+        return;
+    }
+
+    const range = selection.getRangeAt(0);
+    if (!card.contains(range.commonAncestorContainer)) {
+        showToast('Select text inside the preview.');
+        return;
+    }
+
+    const span = document.createElement('span');
+    span.style[styleProperty] = value;
+
+    try {
+        range.surroundContents(span);
+    } catch (error) {
+        const fragment = range.extractContents();
+        span.appendChild(fragment);
+        range.insertNode(span);
+    }
+
+    selection.removeAllRanges();
+    const updatedRange = document.createRange();
+    updatedRange.selectNodeContents(span);
+    selection.addRange(updatedRange);
+    queuePreviewDraftSave();
+}
+
 function applyPreviewFontSize(size) {
     if (!size) return;
-    runPreviewCommand('fontSize', size);
+    wrapSelectionWithInlineStyle('fontSize', `${Number(size)}px`);
 }
 
 function applyPreviewFontFamily(family) {
@@ -1868,27 +2090,44 @@ function toggleWordToolsState(enabled) {
     });
 }
 
-function resetPreviewAdjustments() {
+function populateFontSizeControl() {
+    const select = document.getElementById('fontSizeControl');
+    if (!select || select.options.length > 1) return;
+
+    for (let size = 8; size <= 72; size += 1) {
+        const option = document.createElement('option');
+        option.value = String(size);
+        option.textContent = `${size}`;
+        select.appendChild(option);
+    }
+}
+
+function syncPreviewAdjustmentInputs() {
     const fontScale = document.getElementById('fontScale');
     const lineSpacing = document.getElementById('lineSpacing');
     const sectionSpacing = document.getElementById('sectionSpacing');
     const contentShift = document.getElementById('contentShift');
 
-    if (fontScale) fontScale.value = '100';
-    if (lineSpacing) lineSpacing.value = '1.45';
-    if (sectionSpacing) sectionSpacing.value = '20';
-    if (contentShift) contentShift.value = '0';
+    if (fontScale) fontScale.value = String(previewAdjustments.fontScale);
+    if (lineSpacing) lineSpacing.value = String(previewAdjustments.lineSpacing);
+    if (sectionSpacing) sectionSpacing.value = String(previewAdjustments.sectionSpacing);
+    if (contentShift) contentShift.value = String(previewAdjustments.contentShift);
 
+    updateRangeText('fontScaleValue', `${previewAdjustments.fontScale}%`);
+    updateRangeText('lineSpacingValue', `${Number(previewAdjustments.lineSpacing).toFixed(2)}`);
+    updateRangeText('sectionSpacingValue', `${previewAdjustments.sectionSpacing}px`);
+    updateRangeText('contentShiftValue', `${previewAdjustments.contentShift}px`);
+    updateAlignmentButtons();
+}
+
+function resetPreviewAdjustments() {
     previewAdjustments.fontScale = 100;
     previewAdjustments.lineSpacing = 1.45;
     previewAdjustments.sectionSpacing = 20;
     previewAdjustments.contentShift = 0;
+    previewAdjustments.textAlign = 'left';
 
-    updateRangeText('fontScaleValue', '100%');
-    updateRangeText('lineSpacingValue', '1.45');
-    updateRangeText('sectionSpacingValue', '20px');
-    updateRangeText('contentShiftValue', '0px');
-
+    syncPreviewAdjustmentInputs();
     applyPreviewAdjustments();
 }
 
@@ -1942,6 +2181,8 @@ function initPreviewTooling() {
         });
     });
 
+    populateFontSizeControl();
+    syncPreviewAdjustmentInputs();
     toggleWordToolsState(false);
 }
 
@@ -2161,7 +2402,7 @@ function buildDefaultLayout(data) {
     const {
         color, font, bgColor, profilePhotoHtml, userName, userAge, userEmail,
         userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
-        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+        userSummary, educationHtml, experienceSectionHtml, projectsSectionHtml, documentsSectionHtml
     } = data;
 
     return `
@@ -2181,12 +2422,16 @@ function buildDefaultLayout(data) {
     </div>
     </div>
     <div class="resume-section">
+    ${makeSectionTitle('Professional Summary', color)}
+    <p class="resume-text-block">${userSummary}</p>
+    </div>
+    <div class="resume-section">
     ${makeSectionTitle('Skills', color)}
     ${skillsSectionHtml}
     </div>
     <div class="resume-section">
-    ${makeSectionTitle('Professional Summary', color)}
-    <p class="resume-text-block">${userSummary}</p>
+    ${makeSectionTitle('Projects', color)}
+    ${projectsSectionHtml}
     </div>
     <div class="resume-section">
     ${makeSectionTitle('Education', color)}
@@ -2207,7 +2452,7 @@ function buildTwoColumnLayout(data, sidebarBg, sidebarText, cardBg) {
     const {
         color, font, profilePhotoHtml, userName, userAge, userEmail,
         userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
-        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+        userSummary, educationHtml, experienceSectionHtml, projectsSectionHtml, documentsSectionHtml
     } = data;
 
     return `
@@ -2223,10 +2468,6 @@ function buildTwoColumnLayout(data, sidebarBg, sidebarText, cardBg) {
     ${userLinkedin ? `<p class="resume-line-item"><b>LinkedIn:</b> ${userLinkedin}</p>` : ""}
     ${userGithub ? `<p class="resume-line-item"><b>GitHub:</b> ${userGithub}</p>` : ""}
     <div class="resume-section">
-    <h4 style="margin-top:14px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.45); padding-bottom:4px;">Skills</h4>
-    ${skillsSectionHtml}
-    </div>
-    <div class="resume-section">
     <h4 style="margin-top:14px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.45); padding-bottom:4px;">Documents</h4>
     ${documentsSectionHtml}
     </div>
@@ -2237,12 +2478,20 @@ function buildTwoColumnLayout(data, sidebarBg, sidebarText, cardBg) {
     <p class="resume-text-block">${userSummary}</p>
     </div>
     <div class="resume-section">
+    ${makeSectionTitle('Skills', color, true)}
+    ${skillsSectionHtml}
+    </div>
+    <div class="resume-section">
+    ${makeSectionTitle('Projects', color, true)}
+    ${projectsSectionHtml}
+    </div>
+    <div class="resume-section">
     ${makeSectionTitle('Education', color, true)}
     ${educationHtml}
     </div>
     <div class="resume-section">
-    ${makeSectionTitle('Experience', color, true)}
-    ${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}
+    ${makeSectionTitle('Work Experience', color, true)}
+    ${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>[^<]*Experience[^<]*<\/h3>/, '') : experienceSectionHtml}
     </div>
     </section>
     </div>
@@ -2254,7 +2503,7 @@ function buildTimelineLayout(data, cardBg) {
     const {
         color, font, profilePhotoHtml, userName, userAge, userEmail,
         userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
-        userSummary, educationHtml, expHtml, isFresher, documentsSectionHtml
+        userSummary, educationHtml, expHtml, isFresher, projectsSectionHtml, documentsSectionHtml
     } = data;
 
     const timelineExp = isFresher
@@ -2278,7 +2527,7 @@ function buildTimelineLayout(data, cardBg) {
     </div>
     </div>
     <div class="resume-section">
-    ${makeSectionTitle('Profile', color, true)}
+    ${makeSectionTitle('Professional Summary', color, true)}
     <p class="resume-text-block">${userSummary}</p>
     </div>
     <div class="resume-section">
@@ -2286,11 +2535,15 @@ function buildTimelineLayout(data, cardBg) {
     ${skillsSectionHtml}
     </div>
     <div class="resume-section">
+    ${makeSectionTitle('Projects', color, true)}
+    ${projectsSectionHtml}
+    </div>
+    <div class="resume-section" style="color:${color};">
     ${makeSectionTitle('Education', color, true)}
     ${educationHtml}
     </div>
-    <div class="resume-section" style="color:${color};">
-    ${makeSectionTitle('Career Timeline', color, true)}
+    <div class="resume-section">
+    ${makeSectionTitle('Work Experience', color, true)}
     ${timelineExp}
     </div>
     <div class="resume-section">
@@ -2305,7 +2558,7 @@ function buildEditorialLayout(data, cardBg, accent2) {
     const {
         color, font, profilePhotoHtml, userName, userAge, userEmail,
         userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
-        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+        userSummary, educationHtml, experienceSectionHtml, projectsSectionHtml, documentsSectionHtml
     } = data;
 
     return `
@@ -2320,11 +2573,12 @@ function buildEditorialLayout(data, cardBg, accent2) {
     <div class="canva-layout-grid" style="grid-template-columns:minmax(0,1fr) minmax(220px,32%); margin-top:14px;">
     <section class="canva-layout-main">
     <div class="resume-section">${makeSectionTitle('Professional Summary', color, true)}<p class="resume-text-block">${userSummary}</p></div>
+    <div class="resume-section">${makeSectionTitle('Skills', color, true)}${skillsSectionHtml}</div>
+    <div class="resume-section">${makeSectionTitle('Projects', color, true)}${projectsSectionHtml}</div>
     <div class="resume-section">${makeSectionTitle('Education', color, true)}${educationHtml}</div>
-    <div class="resume-section">${makeSectionTitle('Experience', color, true)}${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>Experience<\/h3>/, '') : experienceSectionHtml}</div>
+    <div class="resume-section">${makeSectionTitle('Work Experience', color, true)}${experienceSectionHtml.includes('Experience') ? experienceSectionHtml.replace(/<h3[^>]*>[^<]*Experience[^<]*<\/h3>/, '') : experienceSectionHtml}</div>
     </section>
     <aside class="canva-layout-side" style="background:#fff; border:1px dashed ${accent2}; color:#1f2937;">
-    <div class="resume-section">${makeSectionTitle('Skills', color, true)}${skillsSectionHtml}</div>
     <div class="resume-section">${makeSectionTitle('Attached Documents', color, true)}${documentsSectionHtml}</div>
     </aside>
     </div>
@@ -2336,7 +2590,7 @@ function buildPhotoRightLayout(data) {
     const {
         color, font, profilePhotoHtml, userName, userAge, userEmail,
         userPhone, userAddress, userLinkedin, userGithub, skillsSectionHtml,
-        userSummary, educationHtml, experienceSectionHtml, documentsSectionHtml
+        userSummary, educationHtml, experienceSectionHtml, projectsSectionHtml, documentsSectionHtml
     } = data;
 
     // Derive a lightened version of the accent for sidebar
@@ -2388,10 +2642,6 @@ function buildPhotoRightLayout(data) {
 
         <!-- Sidebar -->
         <aside style="background:${sidebarBg}; padding:20px 18px; border-right:1px solid ${sidebarBdr};">
-          <div style="margin-bottom:22px;">
-            ${sectionH('Skills')}
-            ${skillsSectionHtml}
-          </div>
           <div>
             ${sectionH('Attached Documents')}
             ${documentsSectionHtml}
@@ -2405,11 +2655,19 @@ function buildPhotoRightLayout(data) {
             <p class="resume-text-block" style="margin:0; color:#374151;">${userSummary}</p>
           </div>
           <div style="margin-bottom:18px;">
+                        ${sectionH('Skills')}
+                        ${skillsSectionHtml}
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        ${sectionH('Projects')}
+                        ${projectsSectionHtml}
+                    </div>
+                    <div style="margin-bottom:18px;">
             ${sectionH('Education')}
             ${educationHtml || '<p class="resume-empty-note">No education added yet.</p>'}
           </div>
                     <div style="margin-top:18px;">
-                        ${sectionH('Experience')}
+                        ${sectionH('Work Experience')}
                         ${bodyExpHtml || '<p class="resume-empty-note">No experience added yet.</p>'}
                     </div>
         </section>
@@ -2479,6 +2737,15 @@ function readFileAsDataURL(file) {
 // PREVIEW
 async function previewResume(){
 
+const previewEl = document.getElementById('resumePreview');
+
+if (!formStateDirty && previewDraftHtml) {
+    previewEl.innerHTML = previewDraftHtml;
+    applyPreviewAdjustments();
+    setPreviewEditMode();
+    return;
+}
+
 const color = selectedTemplate.color;
 const font = selectedTemplate.font;
 const bgColor = selectedTemplate.bgColor;
@@ -2493,6 +2760,7 @@ const userGithub = document.getElementById('github').value;
 const userSummary = document.getElementById('summary').value;
 const userSkills = document.getElementById('skills').value;
 const userSkillsList = parseSkills(userSkills);
+const skillsLayout = document.getElementById('skillsLayout').value || 'list';
 const isFresher = document.getElementById('isFresher').checked;
 
 const docTitles = document.querySelectorAll('.docTitle');
@@ -2577,13 +2845,40 @@ for (let i = 0; i < expTitles.length; i++) {
     }
 }
 
+let projectsHtml = "";
+const projectNames = document.querySelectorAll('.projectName');
+for (let i = 0; i < projectNames.length; i++) {
+    const name = projectNames[i]?.value || "";
+    const link = document.querySelectorAll('.projectLink')[i]?.value || "";
+    const details = document.querySelectorAll('.projectDetails')[i]?.value || "";
+
+    if (name || link || details) {
+        const safeLink = escapeHtml(link);
+        projectsHtml += `<div class="resume-project-item" style="color:${color};">`;
+        if (name) {
+            projectsHtml += `<p class="resume-project-title">${escapeHtml(name)}</p>`;
+        }
+        if (link) {
+            projectsHtml += `<a class="resume-project-link" href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeLink}</a>`;
+        }
+        if (details) {
+            projectsHtml += `<p class="resume-text-block" style="margin:0; color:inherit;">${escapeHtml(details)}</p>`;
+        }
+        projectsHtml += `</div>`;
+    }
+}
+
 const experienceSectionHtml = isFresher
-    ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3><p class="resume-empty-note">Fresher - ready to begin a professional career and build hands-on experience.</p>`
-    : (expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Experience</h3>${expHtml}` : "");
+    ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Work Experience</h3><p class="resume-empty-note">Fresher - ready to begin a professional career and build hands-on experience.</p>`
+    : (expHtml ? `<h3 style="color:${color}; margin-top: 20px; border-bottom: 2px solid ${color}; padding-bottom: 5px;">Work Experience</h3>${expHtml}` : "");
 
 const skillsSectionHtml = userSkillsList.length
-    ? `<ul class="resume-skills-list">${userSkillsList.map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>`
+    ? `<ul class="resume-skills-list${skillsLayout === 'two-column' ? ' two-column' : ''}">${userSkillsList.map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>`
     : `<p class="resume-empty-note">No skills added yet.</p>`;
+
+const projectsSectionHtml = projectsHtml
+    ? `<div class="resume-project-list">${projectsHtml}</div>`
+    : `<p class="resume-empty-note">No projects added yet.</p>`;
 
 const documentsSectionHtml = documentItems.length
     ? `<ul class="resume-skills-list">${documentItems.map((doc, idx) => `<li><b>${idx + 1}. ${escapeHtml(doc.title)}</b>${doc.fileName ? ` (${escapeHtml(doc.fileName)})` : ''}${doc.note ? ` - ${escapeHtml(doc.note)}` : ''}</li>`).join('')}</ul>`
@@ -2608,18 +2903,17 @@ const layoutData = {
     expHtml,
     isFresher,
     experienceSectionHtml,
+    projectsSectionHtml,
     documentsSectionHtml
 };
 
-document.getElementById('resumePreview').innerHTML = buildResumeLayoutByTemplate(layoutData);
+previewEl.innerHTML = buildResumeLayoutByTemplate(layoutData);
+previewDraftHtml = previewEl.innerHTML.trim();
+savePreviewDraftLocally();
+formStateDirty = false;
 
     applyPreviewAdjustments();
     setPreviewEditMode();
-
-    // Auto-save to Firebase after every preview
-    if (typeof window.saveResumeToFirestore === 'function') {
-        window.saveResumeToFirestore();
-    }
 }
 
 // DOWNLOAD EXACT PREVIEW
@@ -2718,6 +3012,8 @@ onAuthStateChanged(auth, (user) => {
         currentUserId    = user.uid;
         currentUserEmail = user.email;
         document.getElementById('userEmail').textContent = user.email;
+        loadPreviewDraftLocally();
+        syncPreviewAdjustmentInputs();
         loadSavedResumes();
     } else {
         window.location.href = "login.html";
@@ -2727,6 +3023,18 @@ onAuthStateChanged(auth, (user) => {
 // ── SAVE RESUME TO FIRESTORE ────────────────────────────────
 window.saveResumeToFirestore = async function () {
     if (!currentUserId) return;
+
+    const previewEl = document.getElementById('resumePreview');
+    const livePreviewHtml = previewEl?.innerHTML?.trim() || '';
+
+    if (livePreviewHtml) {
+        previewDraftHtml = livePreviewHtml;
+        savePreviewDraftLocally();
+    }
+
+    if (!previewDraftHtml) {
+        await previewResume();
+    }
 
     const educations = [];
     document.querySelectorAll('.eduDegree').forEach((el, i) => {
@@ -2750,6 +3058,15 @@ window.saveResumeToFirestore = async function () {
         });
     });
 
+    const projects = [];
+    document.querySelectorAll('.projectName').forEach((el, i) => {
+        projects.push({
+            name: el.value || "",
+            link: document.querySelectorAll('.projectLink')[i]?.value || "",
+            details: document.querySelectorAll('.projectDetails')[i]?.value || ""
+        });
+    });
+
     const resumeData = {
         name:        document.getElementById('name').value        || "",
         age:         document.getElementById('age').value         || "",
@@ -2760,15 +3077,19 @@ window.saveResumeToFirestore = async function () {
         github:      document.getElementById('github').value      || "",
         summary:     document.getElementById('summary').value     || "",
         skills:      document.getElementById('skills').value      || "",
+        skillsLayout: document.getElementById('skillsLayout').value || 'list',
         template:    document.getElementById('template').value    || "modern-blue",
         education:   educations,
         experience:  experiences,
+        projects:    projects,
         documents:   Array.from(document.querySelectorAll('.docTitle')).map((el, i) => ({
             title: el.value || "",
             note: document.querySelectorAll('.docNote')[i]?.value || "",
             fileName: document.querySelectorAll('.docFile')[i]?.files?.[0]?.name || ""
         })),
         isFresher:   document.getElementById('isFresher').checked,
+        previewSettings: { ...previewAdjustments },
+        previewHtml:  previewDraftHtml || livePreviewHtml || "",
         userId:      currentUserId,
         userEmail:   currentUserEmail,
         createdAt:   new Date().toISOString()
@@ -2796,7 +3117,7 @@ async function loadSavedResumes() {
         const snap = await getDocs(q);
 
         if (snap.empty) {
-            container.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px;">No saved resumes yet. Click "Preview &amp; Save Resume" to save one.</p>';
+            container.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px;">No saved resumes yet. Click "Save Resume" to save one.</p>';
             return;
         }
 
@@ -2855,8 +3176,16 @@ window.loadResumeData = function (id) {
     document.getElementById('github').value   = data.github   || "";
     document.getElementById('summary').value  = data.summary  || "";
     document.getElementById('skills').value   = data.skills   || "";
+    document.getElementById('skillsLayout').value = data.skillsLayout || 'list';
     document.getElementById('isFresher').checked = Boolean(data.isFresher);
     toggleFresherMode();
+
+    previewAdjustments.fontScale = Number(data.previewSettings?.fontScale || 100);
+    previewAdjustments.lineSpacing = Number(data.previewSettings?.lineSpacing || 1.45);
+    previewAdjustments.sectionSpacing = Number(data.previewSettings?.sectionSpacing || 20);
+    previewAdjustments.contentShift = Number(data.previewSettings?.contentShift || 0);
+    previewAdjustments.textAlign = data.previewSettings?.textAlign || 'left';
+    syncPreviewAdjustmentInputs();
 
     // Rebuild education entries
     const eduContainer = document.getElementById('educationContainer');
@@ -2886,6 +3215,17 @@ window.loadResumeData = function (id) {
         box.querySelector('.expDetails').value = exp.details || "";
     });
 
+    const projectContainer = document.getElementById('projectsContainer');
+    projectContainer.innerHTML = '';
+    (data.projects || []).forEach(project => {
+        window.addProject();
+        const boxes = projectContainer.querySelectorAll('.entry-box');
+        const box = boxes[boxes.length - 1];
+        box.querySelector('.projectName').value = project.name || "";
+        box.querySelector('.projectLink').value = project.link || "";
+        box.querySelector('.projectDetails').value = project.details || "";
+    });
+
     const docContainer = document.getElementById('documentsContainer');
     docContainer.innerHTML = '';
     (data.documents || []).forEach(item => {
@@ -2896,8 +3236,21 @@ window.loadResumeData = function (id) {
         box.querySelector('.docNote').value = item.note || "";
     });
 
+    previewDraftHtml = data.previewHtml || '';
+    if (previewDraftHtml) {
+        document.getElementById('resumePreview').innerHTML = previewDraftHtml;
+        applyPreviewAdjustments();
+        setPreviewEditMode();
+        savePreviewDraftLocally();
+    } else {
+        document.getElementById('resumePreview').innerHTML = '';
+        savePreviewDraftLocally();
+    }
+
+    formStateDirty = false;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    showToast("📂 Resume loaded! Update and click Preview & Save.");
+    showToast("📂 Resume loaded! Update it, preview it, or save it again.");
 };
 
     toggleFresherMode();
@@ -2924,6 +3277,8 @@ function showToast(msg) {
 }
 
 initPreviewTooling();
+initResumeDirtyTracking();
+attachPreviewDraftListener();
 addAttachmentDocument();
 </script>
 
