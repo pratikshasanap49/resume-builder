@@ -1630,7 +1630,31 @@ Highlight
 <div class="buttons">
 <button class="btn" onclick="previewResume()">👁 Preview Resume</button>
 <button class="btn" onclick="saveResumeToFirestore()">💾 Save Resume</button>
+<select id="paperSize" style="max-width:140px; border-radius:10px; padding:10px; border:1px solid #ccc;">
+<option value="a4">A4</option>
+<option value="letter">Letter</option>
+<option value="legal">Legal</option>
+</select>
 <button class="btn" onclick="downloadResume()">⬇ Download PDF</button>
+<button class="btn" onclick="downloadWord()">📝 Download Word</button>
+</div>
+
+<div class="section-card">
+<div class="section-header">
+<div class="circle">5</div>
+<h3>ATS Score Checker</h3>
+</div>
+<div class="input-group">
+<label>Upload Resume PDF or DOCX</label>
+<input type="file" id="atsResumeFile" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+</div>
+<div class="buttons" style="gap:10px;">
+<button class="btn" onclick="calculateAtsScore()">🔍 Check ATS Score</button>
+</div>
+<div id="atsResult" style="margin-top:15px; padding:15px; background:#eff6ff; border-radius:12px; border:1px solid #dbeafe; color:#0f172a;">
+<strong>ATS Score: </strong><span id="atsScoreValue">Not calculated yet</span>
+<div id="atsDetails" style="margin-top:10px; font-size:14px; color:#334155;"></div>
+</div>
 </div>
 
 <!-- PREVIEW -->
@@ -1647,6 +1671,7 @@ Highlight
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 
@@ -1777,12 +1802,21 @@ let selectedTemplate = {
 function selectTemplate(name, font, color, bgColor) {
     selectedTemplate = { name, font, color, bgColor };
     document.getElementById('template').value = name;
+    formStateDirty = true;
     
     // Update selected state
     document.querySelectorAll('.template-card').forEach(card => {
         card.classList.remove('selected');
     });
-    event.currentTarget.classList.add('selected');
+
+    if (typeof event !== 'undefined' && event.currentTarget) {
+        event.currentTarget.classList.add('selected');
+    }
+
+    const previewEl = document.getElementById('resumePreview');
+    if (previewEl && previewEl.innerHTML.trim()) {
+        previewResume();
+    }
 }
 
 // ADD EDUCATION
@@ -1929,11 +1963,62 @@ function queuePreviewDraftSave() {
     }, 250);
 }
 
+function syncPreviewEditToForm() {
+    const preview = document.getElementById('resumePreview');
+    if (!preview) return;
+
+    const nameHeading = preview.querySelector('h2');
+    if (nameHeading) {
+        document.getElementById('name').value = nameHeading.textContent.trim();
+    }
+
+    const summarySection = Array.from(preview.querySelectorAll('.resume-section')).find(section => {
+        const heading = section.querySelector('h3');
+        return heading && heading.textContent.toLowerCase().includes('professional summary');
+    });
+    if (summarySection) {
+        const summaryText = summarySection.querySelector('p')?.textContent.trim();
+        if (summaryText) {
+            document.getElementById('summary').value = summaryText;
+        }
+    }
+
+    const skillsSection = Array.from(preview.querySelectorAll('.resume-section')).find(section => {
+        const heading = section.querySelector('h3');
+        return heading && heading.textContent.toLowerCase().includes('skills');
+    });
+    if (skillsSection) {
+        const skillItems = Array.from(skillsSection.querySelectorAll('li'));
+        if (skillItems.length) {
+            document.getElementById('skills').value = skillItems.map(li => li.textContent.trim()).join('\n');
+        }
+    }
+
+    const contactItems = Array.from(preview.querySelectorAll('.resume-contact-grid .resume-line-item'));
+    contactItems.forEach(item => {
+        const text = item.textContent.trim();
+        if (text.toLowerCase().includes('email')) {
+            document.getElementById('email').value = text.replace(/email[:\s]*/i, '').trim();
+        } else if (text.toLowerCase().includes('phone') || text.includes('📞')) {
+            document.getElementById('phone').value = text.replace(/phone[:\s]*/i, '').replace('📞', '').trim();
+        } else if (text.toLowerCase().includes('address') || text.includes('📍')) {
+            document.getElementById('address').value = text.replace(/address[:\s]*/i, '').replace('📍', '').trim();
+        } else if (text.toLowerCase().includes('linkedin') || text.includes('🔗')) {
+            document.getElementById('linkedin').value = text.replace(/linkedin[:\s]*/i, '').replace('🔗', '').trim();
+        } else if (text.toLowerCase().includes('github') || text.includes('💻')) {
+            document.getElementById('github').value = text.replace(/github[:\s]*/i, '').replace('💻', '').trim();
+        }
+    });
+}
+
 function attachPreviewDraftListener() {
     const preview = document.getElementById('resumePreview');
     if (!preview || preview.dataset.autosaveBound === 'true') return;
 
     preview.addEventListener('input', () => {
+        if (document.getElementById('enablePreviewEdit')?.checked) {
+            syncPreviewEditToForm();
+        }
         queuePreviewDraftSave();
     });
 
@@ -2919,51 +3004,187 @@ formStateDirty = false;
 // DOWNLOAD EXACT PREVIEW
 async function downloadResume(){
 
-const editModeEnabled = document.getElementById('enablePreviewEdit')?.checked;
-const previewHasContent = document.getElementById('resumePreview')?.innerHTML.trim();
-if (!editModeEnabled || !previewHasContent) {
-    await previewResume();
-}
+    const editModeEnabled = document.getElementById('enablePreviewEdit')?.checked;
+    const previewHasContent = document.getElementById('resumePreview')?.innerHTML.trim();
+    if (!editModeEnabled || !previewHasContent) {
+        await previewResume();
+    }
 
-const element = document.getElementById("resumePreview");
-const canvas = await html2canvas(element, { scale:2, useCORS: true });
-const paperSize = document.getElementById("paperSize")?.value || "a4";
-const { attachments, unsupportedCount } = await collectAttachmentPayloads();
+    const element = document.getElementById("resumePreview");
+    const canvas = await html2canvas(element, { scale:2, useCORS: true });
+    const paperSize = document.getElementById("paperSize")?.value || "a4";
+    const { attachments, unsupportedCount } = await collectAttachmentPayloads();
 
-const targetBytes = getTargetSizeBytes();
-let quality = getInitialCompressionQuality();
-let scaleFactor = 1.0;
-let pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
+    const targetBytes = getTargetSizeBytes();
+    let quality = getInitialCompressionQuality();
+    let scaleFactor = 1.0;
+    let pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
 
-if (targetBytes) {
-    let attempts = 0;
-    while (pdfBlob.size > targetBytes && attempts < 10) {
-        if (quality > 0.35) {
-            quality = Math.max(0.35, quality - 0.08);
-        } else {
-            scaleFactor = Math.max(0.55, scaleFactor - 0.1);
+    if (targetBytes) {
+        let attempts = 0;
+        while (pdfBlob.size > targetBytes && attempts < 10) {
+            if (quality > 0.35) {
+                quality = Math.max(0.35, quality - 0.08);
+            } else {
+                scaleFactor = Math.max(0.55, scaleFactor - 0.1);
+            }
+            pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
+            attempts += 1;
         }
-        pdfBlob = buildPdfBlobWithAttachments(canvas, paperSize, quality, scaleFactor, attachments);
-        attempts += 1;
+    }
+
+    const userName = document.getElementById('name').value.trim() || "Resume";
+    const fileName = `${userName}_Resume_${paperSize.toUpperCase()}.pdf`;
+
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl;
+    downloadLink.download = fileName;
+    downloadLink.click();
+    URL.revokeObjectURL(blobUrl);
+
+    const kbSize = (pdfBlob.size / 1024).toFixed(1);
+    if (unsupportedCount > 0) {
+        showToast(`PDF ready (${kbSize} KB). ${unsupportedCount} unsupported attachment(s) added as note pages.`);
+    } else {
+        showToast(`PDF ready (${kbSize} KB)`);
     }
 }
 
-const userName = document.getElementById('name').value.trim() || "Resume";
-const fileName = `${userName}_Resume_${paperSize.toUpperCase()}.pdf`;
+function buildWordHtml() {
+    const previewEl = document.getElementById('resumePreview');
+    if (!previewEl) return '';
 
-const blobUrl = URL.createObjectURL(pdfBlob);
-const downloadLink = document.createElement('a');
-downloadLink.href = blobUrl;
-downloadLink.download = fileName;
-downloadLink.click();
-URL.revokeObjectURL(blobUrl);
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Resume</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+img { max-width: 100%; height: auto; }
+.resume-card { width: 100%; max-width: 960px; margin: 0 auto; }
+.resume-contact-grid, .resume-skills-list, .resume-project-list { width: 100%; }
+.resume-skills-list { list-style: disc; margin-left: 20px; }
+.resume-skills-list.two-column { column-count: 2; column-gap: 20px; }
+.resume-text-block { white-space: pre-wrap; }
+.resume-section h3 { margin-bottom: 8px; }
+.resume-section p, .resume-section li { margin: 4px 0; }
+</style>
+</head>
+<body>
+${previewEl.innerHTML}
+</body>
+</html>`;
 
-const kbSize = (pdfBlob.size / 1024).toFixed(1);
-if (unsupportedCount > 0) {
-    showToast(`PDF ready (${kbSize} KB). ${unsupportedCount} unsupported attachment(s) added as note pages.`);
-} else {
-    showToast(`PDF ready (${kbSize} KB)`);
+    return html;
 }
+
+async function downloadWord() {
+    const editModeEnabled = document.getElementById('enablePreviewEdit')?.checked;
+    if (!editModeEnabled || !document.getElementById('resumePreview')?.innerHTML.trim()) {
+        await previewResume();
+    }
+
+    const content = buildWordHtml();
+    const blob = new Blob([content], { type: 'application/msword' });
+    const userName = document.getElementById('name').value.trim() || "Resume";
+    const fileName = `${userName}_Resume.doc`;
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast('Word document generated. Open in Word and save as DOCX if needed.');
+}
+
+async function parseDocxText(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXml = await zip.file('word/document.xml')?.async('string');
+    if (!documentXml) return '';
+    return documentXml.replace(/<.*?>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function parsePdfText(file) {
+    if (!window.pdfjsLib) return '';
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pages = [];
+    for (let p = 1; p <= pdf.numPages; p += 1) {
+        const page = await pdf.getPage(p);
+        const textContent = await page.getTextContent();
+        pages.push(textContent.items.map(item => item.str).join(' '));
+    }
+    return pages.join(' ');
+}
+
+async function extractTextFromResumeFile(file) {
+    if (!file) return '';
+    const type = file.type;
+    if (type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        return await parsePdfText(file);
+    }
+    if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.toLowerCase().endsWith('.docx')) {
+        return await parseDocxText(file);
+    }
+    return '';
+}
+
+async function calculateAtsScore() {
+    const atsResumeFile = document.getElementById('atsResumeFile')?.files?.[0];
+    let resumeText = '';
+    if (atsResumeFile) {
+        resumeText = await extractTextFromResumeFile(atsResumeFile);
+    }
+    if (!resumeText) {
+        resumeText = document.getElementById('resumePreview')?.innerText || '';
+    }
+
+    if (!resumeText.trim()) {
+        showToast('Preview your resume or upload a PDF/DOCX file first.');
+        return;
+    }
+
+    const extractKeywords = (text) => {
+        return Array.from(new Set(
+            text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .split(/\s+/)
+                .filter(Boolean)
+                .filter(word => word.length > 3)
+        ));
+    };
+
+    const resumeKeywords = extractKeywords(resumeText);
+    if (!resumeKeywords.length) {
+        showToast('Unable to extract keywords from the resume content.');
+        return;
+    }
+
+    const uniqueCount = resumeKeywords.length;
+    const commonWords = ['experience','skills','education','project','achieved','managed','developed','team','leadership'];
+    const matchedKeywords = resumeKeywords.filter(word => !commonWords.includes(word));
+    const score = Math.min(100, Math.round((matchedKeywords.length / Math.max(15, uniqueCount)) * 100));
+    const details = [];
+
+    details.push(`Extracted ${uniqueCount} keywords from resume.`);
+    details.push(`Found ${matchedKeywords.length} distinctive ATS-friendly terms.`);
+    if (score >= 85) {
+        details.push('Excellent: resume contains strong keyword coverage.');
+    } else if (score >= 65) {
+        details.push('Good: add a few more role-specific terms.');
+    } else {
+        details.push('Weak: increase the resume keyword density and relevance.');
+    }
+
+    const sourceText = atsResumeFile ? 'uploaded file' : 'preview text';
+    document.getElementById('atsScoreValue').textContent = `${score}%`;
+    document.getElementById('atsDetails').textContent = `${details.join(' ')} (Scored from ${sourceText}).`;
+    showToast(`ATS score calculated: ${score}%`);
 }
 
 function logout(){
